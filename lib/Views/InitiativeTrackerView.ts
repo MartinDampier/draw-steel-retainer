@@ -27,13 +27,6 @@ export class ExampleView extends ItemView {
     this.tableEl = this.contentEl.createDiv();
 
     this.createTable();
-    this.addRow(new Creature());
-
-    // const container = this.containerEl.children[1];
-    // container.empty();
-    // container.createEl('h2', { text: 'Example view' });
-    // //container.createEl('br');
-    // container.createEl('h4', { text: 'Example view' });
   }
 
   async onClose() {
@@ -47,19 +40,45 @@ export class ExampleView extends ItemView {
     header.createEl('th', {text: 'Character'});
     header.createEl('th', {text: 'Stamina'});
     header.createEl('th', {text: 'Acted'});
+    
     var buttonHeader = header.createEl('th');
     var buttonComp = new ButtonComponent(buttonHeader);
+
+    var sampleCreature = new Creature();
+    sampleCreature.Name = "Creature Sample";
+    sampleCreature.Stamina = 90;
+    
     buttonComp.setButtonText("Create");
     buttonComp.onClick( () => {
-      this.addRow(new Creature());
+      this.addRow(sampleCreature);
     })
     //buttonHeader.createEl('button', { text: "Create"});
   }
 
   addRow(creature: Creature){
-    var header = this.tableEl.createEl('tr');
-    header.createEl('td', {text: 'sample'});
-    header.createEl('td', {text: '40'});
-    header.createEl('td', {text: 'no'});
+    var row = this.tableEl.createEl('tr', {cls: "Centered"});
+    row.createEl('td', {text: creature.Name, cls: "Centered"});
+    row.createEl('td', {text: creature.Stamina.toString(), cls: "Centered"});
+
+    var buttonCell = row.createEl('td');
+    var buttonComp = new ButtonComponent(buttonCell);
+    buttonComp.setButtonText("No");
+    buttonComp.onClick( () => {
+      creature.HasActed = !creature.HasActed;
+      this.changeActedCell(row, buttonComp, creature.HasActed);
+    });
+  }
+
+  changeActedCell(row : HTMLTableRowElement, buttonComp : ButtonComponent, hasActed : boolean) {
+    if (hasActed)
+    {
+      buttonComp.setButtonText("Yes");
+      row.addClass("Acted");
+    }
+    else
+    {
+      buttonComp.setButtonText("No");
+      row.removeClass("Acted");
+    }
   }
 }
