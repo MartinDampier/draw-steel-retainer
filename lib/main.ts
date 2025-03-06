@@ -109,6 +109,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		} else {
 		  // Our view could not be found in the workspace, create a new leaf
 		  // in the right sidebar for it
+		  
 		  leaf = workspace.getRightLeaf(false);
 		  await leaf.setViewState({ type: VIEW_TYPE_EXAMPLE, active: true });
 		}
