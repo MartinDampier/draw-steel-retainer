@@ -7,6 +7,8 @@ export class ExampleView extends ItemView {
   gridEl: HTMLDivElement;
   formEl: HTMLDivElement;
   tableEl: HTMLDivElement;
+  creatures: Creature[] = [];
+  buttons: ButtonComponent[] = [];
   constructor(leaf: WorkspaceLeaf) {
     super(leaf);
   }
@@ -41,21 +43,27 @@ export class ExampleView extends ItemView {
     header.createEl('th', {text: 'Stamina'});
     header.createEl('th', {text: 'Acted'});
     
-    var buttonHeader = header.createEl('th');
-    var buttonComp = new ButtonComponent(buttonHeader);
+    var createButtonHeader = header.createEl('th');
+    var createButtonComp = new ButtonComponent(createButtonHeader);
+    var resetButtonComp = new ButtonComponent(createButtonHeader)
 
     var sampleCreature = new Creature();
     sampleCreature.Name = "Creature Sample";
     sampleCreature.Stamina = 90;
     
-    buttonComp.setButtonText("Create");
-    buttonComp.onClick( () => {
+    createButtonComp.setButtonText("Create");
+    createButtonComp.onClick( () => {
       this.addRow(sampleCreature);
-    })
+    });
+    resetButtonComp.setButtonText("Reset");
+    resetButtonComp.onClick( () => {
+      this.ResetAllCreatures();
+    });
     //buttonHeader.createEl('button', { text: "Create"});
   }
 
   addRow(creature: Creature){
+    this.creatures.push(creature);
     var row = this.tableEl.createEl('tr', {cls: "Centered"});
     row.createEl('td', {text: creature.Name, cls: "Centered"});
     row.createEl('td', {text: creature.Stamina.toString(), cls: "Centered"});
@@ -79,6 +87,21 @@ export class ExampleView extends ItemView {
     {
       buttonComp.setButtonText("No");
       row.removeClass("Acted");
+    }
+  }
+
+  ResetAllCreatures()
+  {
+    var count = this.tableEl.children.length;
+    for (var i = 1; i < count; i++)
+    {
+        var row =  (this.tableEl.children[i] as (HTMLTableRowElement));
+        var button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
+        button.textContent = "No";
+        if (row.classList.contains("Acted"))
+        {
+          row.removeClass("Acted");
+        }
     }
   }
 }
