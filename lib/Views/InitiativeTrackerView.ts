@@ -1,12 +1,17 @@
 import Creature from 'lib/Models/Creature';
-import { ButtonComponent, ItemView, WorkspaceLeaf } from 'obsidian';
+import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent } from 'obsidian';
 
 export const VIEW_TYPE_EXAMPLE = 'example-view';
+export const Yes = 'Yes';
+export const No = 'No';
+export const ActedClass = 'Acted';
 
 export class ExampleView extends ItemView {
   gridEl: HTMLDivElement;
   formEl: HTMLDivElement;
   tableEl: HTMLDivElement;
+  nameInput: TextComponent;
+  staminaInput: TextComponent;
   creatures: Creature[] = [];
   buttons: ButtonComponent[] = [];
   constructor(leaf: WorkspaceLeaf) {
@@ -25,14 +30,30 @@ export class ExampleView extends ItemView {
     this.contentEl.empty();
 
     this.gridEl = this.contentEl.createDiv();
-    this.formEl = this.contentEl.createDiv();
-    this.tableEl = this.contentEl.createDiv();
 
+    this.createInputSection();
     this.createTable();
   }
 
   async onClose() {
     // Nothing to clean up.
+  }
+
+  createInputSection() {
+    this.formEl = this.gridEl.createDiv();
+    this.nameInput = new TextComponent(this.formEl);
+    this.staminaInput = new TextComponent(this.formEl);
+    var createButtonComp = new ButtonComponent(this.formEl);
+    var sampleCreature = new Creature();
+    
+    createButtonComp.setButtonText("Create");
+    createButtonComp.onClick( () => {
+      sampleCreature.Name = this.nameInput.getValue();
+      this.nameInput.setValue('');
+      sampleCreature.Stamina = +this.staminaInput.getValue();
+      this.staminaInput.setValue('');
+      this.addRow(sampleCreature);
+    });
   }
 
   //Create a HTML Table
@@ -44,17 +65,8 @@ export class ExampleView extends ItemView {
     header.createEl('th', {text: 'Acted'});
     
     var createButtonHeader = header.createEl('th');
-    var createButtonComp = new ButtonComponent(createButtonHeader);
     var resetButtonComp = new ButtonComponent(createButtonHeader)
 
-    var sampleCreature = new Creature();
-    sampleCreature.Name = "Creature Sample";
-    sampleCreature.Stamina = 90;
-    
-    createButtonComp.setButtonText("Create");
-    createButtonComp.onClick( () => {
-      this.addRow(sampleCreature);
-    });
     resetButtonComp.setButtonText("Reset");
     resetButtonComp.onClick( () => {
       this.ResetAllCreatures();
@@ -70,23 +82,22 @@ export class ExampleView extends ItemView {
 
     var buttonCell = row.createEl('td');
     var buttonComp = new ButtonComponent(buttonCell);
-    buttonComp.setButtonText("No");
+    buttonComp.setButtonText(No);
     buttonComp.onClick( () => {
-      creature.HasActed = !creature.HasActed;
-      this.changeActedCell(row, buttonComp, creature.HasActed);
+      this.changeActedCell(row, buttonComp, buttonComp.buttonEl.getText() == No);
     });
   }
 
   changeActedCell(row : HTMLTableRowElement, buttonComp : ButtonComponent, hasActed : boolean) {
     if (hasActed)
     {
-      buttonComp.setButtonText("Yes");
-      row.addClass("Acted");
+      buttonComp.setButtonText(Yes);
+      row.addClass(ActedClass);
     }
     else
     {
-      buttonComp.setButtonText("No");
-      row.removeClass("Acted");
+      buttonComp.setButtonText(No);
+      row.removeClass(ActedClass);
     }
   }
 
@@ -97,11 +108,12 @@ export class ExampleView extends ItemView {
     {
         var row =  (this.tableEl.children[i] as (HTMLTableRowElement));
         var button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
-        button.textContent = "No";
-        if (row.classList.contains("Acted"))
+        button.textContent = No;
+        if (row.classList.contains(ActedClass))
         {
-          row.removeClass("Acted");
+          row.removeClass(ActedClass);
         }
     }
+
   }
 }

@@ -1,5 +1,6 @@
 import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
 import { ExampleView, VIEW_TYPE_EXAMPLE } from './Views/InitiativeTrackerView';
+import { ExampleModal } from './Modals/AddCreatureModal';
 // Remember to rename these classes and interfaces!
 
 interface MyPluginSettings {
@@ -91,6 +92,17 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+
+		//Adds example modal to command set
+		this.addCommand( {
+			id: 'display-modal',
+			name: 'Display modal ',
+			callback: () => {
+				new ExampleModal(this.app, (result) => {
+					new Notice(`Hello, ${result}!`);
+				  }).open();
+			}
+		})
 	}
 
 	onunload() {
@@ -111,10 +123,12 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		  // in the right sidebar for it
 		  
 		  leaf = workspace.getRightLeaf(false);
+		  if (leaf != null)
 		  await leaf.setViewState({ type: VIEW_TYPE_EXAMPLE, active: true });
 		}
 	
 		// "Reveal" the leaf in case it is in a collapsed sidebar
+		if (leaf != null)
 		workspace.revealLeaf(leaf);
 	  }
 
