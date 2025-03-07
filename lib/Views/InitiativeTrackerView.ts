@@ -1,3 +1,4 @@
+import { createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
 import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent } from 'obsidian';
 
@@ -41,28 +42,33 @@ export class ExampleView extends ItemView {
 
   createInputSection() {
     this.formEl = this.gridEl.createDiv();
-    this.nameInput = new TextComponent(this.formEl);
-    this.staminaInput = new TextComponent(this.formEl);
+    this.nameInput = new TextComponent(this.formEl).setPlaceholder("Name");
+    this.nameInput.inputEl.addClass("padded-input");
+    this.staminaInput = new TextComponent(this.formEl).setPlaceholder("Max Stamina");
+    this.staminaInput.inputEl.addClass("padded-input");
     var createButtonComp = new ButtonComponent(this.formEl);
-    var sampleCreature = new Creature();
-    
+  
     createButtonComp.setButtonText("Create");
-    createButtonComp.onClick( () => {
-      sampleCreature.Name = this.nameInput.getValue();
-      this.nameInput.setValue('');
-      sampleCreature.Stamina = +this.staminaInput.getValue();
-      this.staminaInput.setValue('');
-      this.addRow(sampleCreature);
-    });
+    createButtonComp.onClick( () => this.createCreatureRow());
+  }
+  
+  createCreatureRow(){
+    var creature = new Creature();
+    creature.Id = (this.creatures.length + 1).toString();
+    creature.Name = this.nameInput.getValue();
+    this.nameInput.setValue('');
+    creature.Stamina = +this.staminaInput.getValue();
+    this.staminaInput.setValue('');
+    this.addRow(creature);
   }
 
   //Create a HTML Table
   createTable() {
-    this.tableEl = this.gridEl.createEl('table');
+    this.tableEl = this.gridEl.createEl('table', {cls: "Centered"});
     var header = this.tableEl.createEl('tr');
-    header.createEl('th', {text: 'Character'});
-    header.createEl('th', {text: 'Stamina'});
-    header.createEl('th', {text: 'Acted'});
+    header.createEl('th', {text: 'Character', cls: 'name-Cell'});
+    header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell'});
+    header.createEl('th', {text: 'Acted'});  
     
     var createButtonHeader = header.createEl('th');
     var resetButtonComp = new ButtonComponent(createButtonHeader)
@@ -77,15 +83,43 @@ export class ExampleView extends ItemView {
   addRow(creature: Creature){
     this.creatures.push(creature);
     var row = this.tableEl.createEl('tr', {cls: "Centered"});
-    row.createEl('td', {text: creature.Name, cls: "Centered"});
-    row.createEl('td', {text: creature.Stamina.toString(), cls: "Centered"});
-
+    row.createEl('td', {text: creature.Name, cls: "Centered name-Cell"});
+    row.id = creature.Id;
+    row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell"})
+    this.updateStamina(row, creature.Stamina.toString())
     var buttonCell = row.createEl('td');
     var buttonComp = new ButtonComponent(buttonCell);
     buttonComp.setButtonText(No);
     buttonComp.onClick( () => {
       this.changeActedCell(row, buttonComp, buttonComp.buttonEl.getText() == No);
     });
+    buttonCell = row.createEl('td');
+    var removeButton = new ButtonComponent(buttonCell);
+    removeButton.buttonEl.addClass("padded");
+    buttonCell.createEl('br');
+    removeButton.setButtonText("Remove");
+    var deadButton = new ButtonComponent(buttonCell);
+    deadButton.buttonEl.addClass("padded");
+    deadButton.setButtonText("Dead");
+  }
+
+  updateStamina(row: HTMLTableRowElement, stamina: string){
+    try{
+      var staminaCell = row.children[1] as HTMLTableCellElement;
+      staminaCell.empty();
+      staminaCell.setText(stamina);
+      staminaCell.createEl('br');
+      new ButtonComponent(staminaCell).setButtonText("-5").onClick(() => {this.updateStamina(row, (+stamina - 5).toString())}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString())}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("+1").onClick(() => {this.updateStamina(row, (+stamina + 1).toString())}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("+5").onClick(() => {this.updateStamina(row, (+stamina + 5).toString())}).setClass('slimButton');
+    }
+    catch(e)
+    {
+      var result = (e as Error).message;
+      console.log("ERROR:");
+      console.log(result);
+    } 
   }
 
   changeActedCell(row : HTMLTableRowElement, buttonComp : ButtonComponent, hasActed : boolean) {

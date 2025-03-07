@@ -8,10 +8,37 @@
     text-align: center;
 }
 
-.Base{
-   
-   }
-   
-.Dead{
-       background-color: gray;
-   }
+.padded-input {
+    margin: 5px;
+    width: 40%;
+}
+
+.padded {
+    margin: 5px;
+}
+
+.stamina-Cell {
+    width:  20%;
+}
+
+table{
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+    width: 90%;
+}
+
+th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+}
+
+.name-Cell {
+    width: 400px;
+}
+.slimButton{
+    margin: 1px;
+    padding: 10px, 0px, 0px, 0px;
+    background-color: transparent;
+}
