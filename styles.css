@@ -1,6 +1,10 @@
-.Acted{
+.red{
     background-color: var(--color-red);
    }
+
+.green {
+    background-color: var(--color-green);
+}
    
 .Centered{
     margin-right: auto;
@@ -8,24 +12,51 @@
     text-align: center;
 }
 
+.fill{
+    height: 90%;
+    width: 90%;
+}
+
 .padded-input {
     margin: 5px;
     width: 40%;
 }
 
+.rightAlign {
+    margin-left: auto;
+    margin-right: 20px;
+    text-align: right;
+}
+
+.headerButtonLeft {
+    margin-left: 5px;
+    margin-right: 1px;
+}
+.headerButtonRight {
+    margin-left: 1px;
+    margin-right: 5px;
+}
+
 .padded {
-    margin: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 1px;
+    width: 90%;
 }
 
 .stamina-Cell {
     width:  20%;
 }
 
+.fullScreen {
+    width: 100%;
+}
+
 table{
     border: 1px solid black;
     border-collapse: collapse;
     padding: 5px;
-    width: 90%;
+    width: 100%;
 }
 
 th, td {
