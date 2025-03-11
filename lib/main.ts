@@ -1,13 +1,16 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
+import { App, ButtonComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
 import { ExampleView, VIEW_TYPE_EXAMPLE } from './Views/InitiativeTrackerView';
+import Creature from 'lib/Models/Creature';
 // Remember to rename these classes and interfaces!
 
 interface MyPluginSettings {
 	mySetting: string;
+	playerCharacters: Creature[];
 }
 
 const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
+	mySetting: 'default',
+	playerCharacters: [],
 }
 
 export default class ForbiddenLandsCharacterSheet extends Plugin {
@@ -82,29 +85,41 @@ class SampleSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
+		containerEl.createEl('h1', {text: 'Draw Steel Companion Settings'});
 
-		new Setting(containerEl)
-			.setName('Character Sheet')
-			.setDesc('Set a note to be your character sheet')
-			.addText(text => text
-				.setPlaceholder('Select a note')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
-		new Setting(containerEl)
-			.setName('Equipment Sheet')
-			.setDesc('Set a note to be your equipment sheet')
-			.addText(text => text
-				.setPlaceholder('Select a note')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
+		var div = containerEl.createDiv({cls: "rightAlign bottomSpace"});
+		new ButtonComponent(div)
+			.setButtonText("Add Player Character")
+			.setClass("rightAlign")
+			.onClick( () => {
+
+				var player = new Creature();
+				this.plugin.settings.playerCharacters.push(player);
+
+				var staminaInput = '';
+
+				new Setting(containerEl)
+				.setName('Player Character')
+				.setDesc('Set the PC\'s Name and Stamina')
+				.addText(text => text
+					.setPlaceholder('Name')
+					.setValue(player.Name)
+					.onChange(async (value) => {
+						console.log('Secret: ' + value);
+						player.Name = value;
+						await this.plugin.saveSettings();
+					}))
+				.addText(text => text
+					.setPlaceholder('Stamina')
+					.setValue(staminaInput)
+					.onChange(async (value) => {
+						console.log('Secret: ' + value);
+						if (value != null && value != "")
+						{
+							player.Stamina = +value;
+						}
+						await this.plugin.saveSettings();
+					}));
+			} );
 	}
 }

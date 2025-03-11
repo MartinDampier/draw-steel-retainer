@@ -24,8 +24,12 @@
 
 .rightAlign {
     margin-left: auto;
-    margin-right: 20px;
+    margin-right: 0px;
     text-align: right;
+}
+
+.bottomSpace {
+    margin-bottom: 5px;
 }
 
 .headerButtonLeft {

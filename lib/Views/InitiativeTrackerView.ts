@@ -34,7 +34,6 @@ export class ExampleView extends ItemView {
   getIcon() {
     return "scroll-text";
   }
-
   async onOpen() {
     this.contentEl.empty();
 
