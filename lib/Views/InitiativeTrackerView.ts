@@ -31,9 +31,9 @@ export class ExampleView extends ItemView {
     return 'Initiative Tracker';
   }
 
-  // getIcon() {
-  //   return Icons.DICE;
-  // }
+  getIcon() {
+    return "scroll-text";
+  }
 
   async onOpen() {
     this.contentEl.empty();

@@ -21,7 +21,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 			(leaf) => new ExampleView(leaf)
 		  );
 
-		  this.addRibbonIcon('dice', 'Activate view', () => {
+		  this.addRibbonIcon('scroll-text', 'DRAW STEEL! (Initiative Tracker)', () => {
 			this.activateView();
 		  });
 
