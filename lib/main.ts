@@ -1,7 +1,9 @@
 import { App, ButtonComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
 import { ExampleView } from './Views/InitiativeTrackerView';
-import { VIEW_TYPE_EXAMPLE, TableFormat } from './Models/Constants';
+import { VIEW_TYPE_EXAMPLE, TableFormat, TableFlag } from './Models/Constants';
 import Creature from 'lib/Models/Creature';
+import { start } from 'repl';
+import { setFlagsFromString } from 'v8';
 // Remember to rename these classes and interfaces!
 
 interface MyPluginSettings {
@@ -16,13 +18,14 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 
 export default class ForbiddenLandsCharacterSheet extends Plugin {
 	settings: MyPluginSettings;
+	creatures: Creature[] = [];
 
 	async onload() {
 		await this.loadSettings();
 
 		this.registerView(
 			VIEW_TYPE_EXAMPLE,
-			(leaf) => new ExampleView(leaf)
+			(leaf) => new ExampleView(leaf, this.creatures)
 		  );
 
 		  this.addRibbonIcon('scroll-text', 'DRAW STEEL! (Initiative Tracker)', () => {
@@ -64,8 +67,30 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		var done = false;
 		var lines: string[] = [];
 		lines = selection.split('\n');
+		var flagFound = false;
+		var creatures = [];
 		for(var i = 0; i < lines.length; i++){
-			console.log(lines[i]);
+			var sample = lines[i];
+			if (sample.contains(TableFlag))
+			{
+				flagFound = true;
+				continue;
+			}
+			if (flagFound && sample.contains("|"))
+			{
+				var cells = sample.split("|");
+				var creature = new Creature();
+				creature.Name = cells[1];
+				creature.Stamina = +cells[2];
+				creature.Id = creatures.length.toString();
+				creatures.push(creature);
+			}
+		}
+		if (creatures.length > 0)
+		{
+			this.creatures = creatures;
+			this.activateView();
+			this.creatures = [];
 		}
 	}
 
@@ -82,14 +107,14 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		if (leaves.length > 0) {
 		  // A leaf with our view already exists, use that
 		  leaf = leaves[0];
+
 		} else {
 		  // Our view could not be found in the workspace, create a new leaf
 		  // in the right sidebar for it
 		  
 		  leaf = workspace.getRightLeaf(false);
-		  if (leaf != null)
-		  await leaf.setViewState({ type: VIEW_TYPE_EXAMPLE, active: true });
-		}
+		  }
+		await leaf.setViewState({ type: VIEW_TYPE_EXAMPLE, active: true });
 	
 		// "Reveal" the leaf in case it is in a collapsed sidebar
 		if (leaf != null)

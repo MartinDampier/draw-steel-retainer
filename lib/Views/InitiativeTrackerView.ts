@@ -13,8 +13,12 @@ export class ExampleView extends ItemView {
   buttons: ButtonComponent[] = [];
   round: number;
 
-  constructor(leaf: WorkspaceLeaf) {
+  constructor(leaf: WorkspaceLeaf, creatures?: Creature[]) {
     super(leaf);
+    if (creatures != null && creatures.length > -1)
+    {
+      this.creatures = creatures;
+    }
   }
 
   getViewType() {
@@ -52,6 +56,7 @@ export class ExampleView extends ItemView {
     createButtonComp.setButtonText("Create");
     createButtonComp.onClick( () => this.createCreatureRow());
     this.setRound(0);
+   
   }
 
   setRound(round: number){
@@ -70,17 +75,19 @@ export class ExampleView extends ItemView {
     });
   }
 
-  createCreatureRow(){
-    if (this.nameInput.getValue() == "")
+  createCreatureRow(creature: Creature = {Name: "", Stamina: 0, Id: "0", HasActed: false}){
+    if (creature.Name == "")
     {
-      return;
+      if (this.nameInput.getValue() == "")
+      {
+        return;
+      }
+      creature.Id = (this.creatures.length + 1).toString();
+      creature.Name = this.nameInput.getValue();
+      this.nameInput.setValue('');
+      creature.Stamina = +this.staminaInput.getValue();
+      this.staminaInput.setValue('');
     }
-    var creature = new Creature();
-    creature.Id = (this.creatures.length + 1).toString();
-    creature.Name = this.nameInput.getValue();
-    this.nameInput.setValue('');
-    creature.Stamina = +this.staminaInput.getValue();
-    this.staminaInput.setValue('');
     this.addRow(creature);
   }
 
@@ -108,39 +115,49 @@ export class ExampleView extends ItemView {
     resetButtonComp.onClick( () => {
       this.removeAllRows();
     });
+    if (this.creatures.length > -1)
+      {
+        this.creatures.forEach((creature) => this.createCreatureRow(creature));
+      }
     //buttonHeader.createEl('button', { text: "Create"});
   }
 
   addRow(creature: Creature){
-    this.creatures.push(creature);
-    var row = this.tableEl.createEl('tr', {cls: "Centered"});
-    row.createEl('td', {text: creature.Name, cls: "Centered name-Cell"});
-    row.id = creature.Id;
-    row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell"})
-    this.updateStamina(row, creature.Stamina.toString())
-    var buttonCell = row.createEl('td', {cls: Green});
-    var buttonComp = new ButtonComponent(buttonCell);
-    buttonComp.setButtonText(No);
-    buttonComp.setClass(Fill);
-    buttonComp.onClick( () => {
-      this.changeTriggeredActionCell(row, buttonComp, buttonComp.buttonEl.getText() == No);
-    });
-    var actedButtonCell = row.createEl('td', {cls: Green});
-    var actedButtonComp = new ButtonComponent(actedButtonCell);
-    actedButtonComp.setButtonText(No);
-    actedButtonComp.setClass(Fill);
-    actedButtonComp.onClick( () => {
-      this.changeActedCell(row, actedButtonComp, actedButtonComp.buttonEl.getText() == No);
-    });
-    buttonCell = row.createEl('td');
-    var removeButton = new ButtonComponent(buttonCell);
-    removeButton.buttonEl.addClass("padded");
-    removeButton.onClick(() => {this.removeRow(row)});
-    buttonCell.createEl('br');
-    removeButton.setButtonText("Remove");
-    var deadButton = new ButtonComponent(buttonCell);
-    deadButton.buttonEl.addClass("padded");
-    deadButton.setButtonText("Dead");
+    try{
+      this.creatures.push(creature);
+      var row = this.tableEl.createEl('tr', {cls: "Centered"});
+      row.createEl('td', {text: creature.Name, cls: "Centered name-Cell"});
+      row.id = creature.Id;
+      row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell"})
+      this.updateStamina(row, creature.Stamina.toString())
+      var buttonCell = row.createEl('td', {cls: Green});
+      var buttonComp = new ButtonComponent(buttonCell);
+      buttonComp.setButtonText(No);
+      buttonComp.setClass(Fill);
+      buttonComp.onClick( () => {
+        this.changeTriggeredActionCell(row, buttonComp, buttonComp.buttonEl.getText() == No);
+      });
+      var actedButtonCell = row.createEl('td', {cls: Green});
+      var actedButtonComp = new ButtonComponent(actedButtonCell);
+      actedButtonComp.setButtonText(No);
+      actedButtonComp.setClass(Fill);
+      actedButtonComp.onClick( () => {
+        this.changeActedCell(row, actedButtonComp, actedButtonComp.buttonEl.getText() == No);
+      });
+      buttonCell = row.createEl('td');
+      var removeButton = new ButtonComponent(buttonCell);
+      removeButton.buttonEl.addClass("padded");
+      removeButton.onClick(() => {this.removeRow(row)});
+      buttonCell.createEl('br');
+      removeButton.setButtonText("Remove");
+      var deadButton = new ButtonComponent(buttonCell);
+      deadButton.buttonEl.addClass("padded");
+      deadButton.setButtonText("Dead");
+    }
+    catch(e)
+    {
+      console.log(e);
+    }
   }
 
   removeRow(row: HTMLTableRowElement) {
