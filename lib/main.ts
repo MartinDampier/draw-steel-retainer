@@ -1,5 +1,6 @@
 import { App, ButtonComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
-import { ExampleView, VIEW_TYPE_EXAMPLE } from './Views/InitiativeTrackerView';
+import { ExampleView } from './Views/InitiativeTrackerView';
+import { VIEW_TYPE_EXAMPLE, TableFormat } from './Models/Constants';
 import Creature from 'lib/Models/Creature';
 // Remember to rename these classes and interfaces!
 
@@ -31,9 +32,41 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
 		const statusBarItemEl = this.addStatusBarItem();
 		statusBarItemEl.setText('Status Bar Text');
-
+		
+		this.addCommands();
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SampleSettingTab(this.app, this));
+	}
+
+	addCommands(){
+		this.addCommand({
+			id: "insert-initiative-table",
+			name: "Insert Initiative Table",
+			editorCallback: (editor: Editor) => { 
+				editor.replaceRange(TableFormat, editor.getCursor());
+			}
+		});
+		this.addCommand({
+			id: 'import-table-to-tracker',
+			name: 'Import Table To Tracker',
+			editorCallback: (editor: Editor) => {
+				this.importSelectionToTracker(editor);
+			}
+		});
+	}
+
+	importSelectionToTracker(editor: Editor){
+		if(!(editor.somethingSelected())) {
+			return;
+		}
+
+		var selection = editor.getSelection();
+		var done = false;
+		var lines: string[] = [];
+		lines = selection.split('\n');
+		for(var i = 0; i < lines.length; i++){
+			console.log(lines[i]);
+		}
 	}
 
 	onunload() {
