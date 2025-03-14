@@ -12,6 +12,7 @@ export class ExampleView extends ItemView {
   creatures: Creature[] = [];
   buttons: ButtonComponent[] = [];
   round: number;
+  malice: number;
 
   constructor(leaf: WorkspaceLeaf, creatures?: Creature[]) {
     super(leaf);
@@ -56,7 +57,30 @@ export class ExampleView extends ItemView {
     createButtonComp.setButtonText("Create");
     createButtonComp.onClick( () => this.createCreatureRow());
     this.setRound(0);
-   
+    this.setMalice(0);
+  }
+ 
+  setMalice(malice: number){
+    if (this.formEl.children.length >= 5)
+      {
+        this.formEl.children[4].remove();
+      }
+      this.malice = malice;
+      var div = this.formEl.createDiv({text: "Malice: " + this.malice, cls: "rightAlign"});
+      var plusMalice = new ButtonComponent(div);
+      plusMalice.setButtonText("+1");
+      plusMalice.setClass("headerButtonLeft");
+      plusMalice.onClick( () => {
+        this.malice++;
+        this.setMalice(this.malice);
+      });
+      var minusMalice = new ButtonComponent(div);
+      minusMalice.setButtonText("-1");
+      minusMalice.setClass("headerButtonLeft");
+      minusMalice.onClick( () => {
+        this.malice--;
+        this.setMalice(this.malice);
+      });
   }
 
   setRound(round: number){
