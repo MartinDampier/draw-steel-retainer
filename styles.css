@@ -2,6 +2,21 @@
     background-color: var(--color-red);
    }
 
+.condition-buttons {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.activatedButton {
+    color: var(--interactive-accent);
+}
+
 .green {
     background-color: var(--color-green);
 }

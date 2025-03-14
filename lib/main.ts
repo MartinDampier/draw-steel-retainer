@@ -1,6 +1,6 @@
 import { App, ButtonComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
 import { ExampleView } from './Views/InitiativeTrackerView';
-import { VIEW_TYPE_EXAMPLE, TableFormat, TableFlag } from './Models/Constants';
+import { VIEW_TYPE_EXAMPLE, TableFormat, TableFlag } from 'lib/Models/Constants';
 import Creature from 'lib/Models/Creature';
 import { start } from 'repl';
 import { setFlagsFromString } from 'v8';
@@ -113,8 +113,9 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		  // in the right sidebar for it
 		  
 		  leaf = workspace.getRightLeaf(false);
-		  }
-		await leaf.setViewState({ type: VIEW_TYPE_EXAMPLE, active: true });
+		  if (leaf != null)
+			await leaf.setViewState({ type: VIEW_TYPE_EXAMPLE, active: true });
+		}
 	
 		// "Reveal" the leaf in case it is in a collapsed sidebar
 		if (leaf != null)

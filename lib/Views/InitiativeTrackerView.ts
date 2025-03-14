@@ -1,7 +1,7 @@
 import { createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
 import { VIEW_TYPE_EXAMPLE, Red, Green, Yes, No, Fill } from 'lib/Models/Constants';
-import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent } from 'obsidian';
+import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent } from 'obsidian';
 
 export class ExampleView extends ItemView {
   gridEl: HTMLDivElement;
@@ -126,7 +126,27 @@ export class ExampleView extends ItemView {
     try{
       this.creatures.push(creature);
       var row = this.tableEl.createEl('tr', {cls: "Centered"});
-      row.createEl('td', {text: creature.Name, cls: "Centered name-Cell"});
+      var nameCell = row.createEl('td', {text: creature.Name, cls: "Centered name-Cell"});
+      nameCell.createEl("br");
+      var nameCellDiv = nameCell.createDiv({cls: "condition-buttons"});
+      var button1 = new ExtraButtonComponent(nameCellDiv).setIcon("droplet").setTooltip("Bleeding"); //Bleeding
+      button1.onClick( () => this.toggleColors(button1) )
+      var button2 = new ExtraButtonComponent(nameCellDiv).setIcon("sparkles").setTooltip("Dazed"); //Dazed
+      button2.onClick( () => this.toggleColors(button2) )
+      var button3 = new ExtraButtonComponent(nameCellDiv).setIcon("frown").setTooltip("Frightened"); //Frightened
+      button3.onClick( () => this.toggleColors(button3) )
+      var button4 = new ExtraButtonComponent(nameCellDiv).setIcon("grab").setTooltip("Grabbed"); //Grabbed
+      button4.onClick( () => this.toggleColors(button4) )
+      var button5 = new ExtraButtonComponent(nameCellDiv).setIcon("arrow-down-to-line").setTooltip("Prone"); //Prone
+      button5.onClick( () => this.toggleColors(button5) )
+      var button6 = new ExtraButtonComponent(nameCellDiv).setIcon("link").setTooltip("Restrained"); //Restrained
+      button6.onClick( () => this.toggleColors(button6) )
+      var button7 = new ExtraButtonComponent(nameCellDiv).setIcon("snail").setTooltip("Slowed"); //Slowed
+      button7.onClick( () => this.toggleColors(button7) )
+      var button8 = new ExtraButtonComponent(nameCellDiv).setIcon("circle-alert").setTooltip("Taunted"); //Taunted
+      button8.onClick( () => this.toggleColors(button8) )
+      var button9 = new ExtraButtonComponent(nameCellDiv).setIcon("heart-crack").setTooltip("Weakened"); //Weakened
+      button9.onClick( () => this.toggleColors(button9) )
       row.id = creature.Id;
       row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell"})
       this.updateStamina(row, creature.Stamina.toString())
@@ -157,6 +177,14 @@ export class ExampleView extends ItemView {
     catch(e)
     {
       console.log(e);
+    }
+  }
+
+  toggleColors(ebc: ExtraButtonComponent) {
+    if (ebc.extraSettingsEl.classList.contains("activatedButton")) {
+      ebc.extraSettingsEl.removeClass("activatedButton");
+    } else {
+      ebc.extraSettingsEl.addClass("activatedButton");
     }
   }
 
