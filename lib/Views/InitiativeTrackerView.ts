@@ -97,7 +97,7 @@ export class ExampleView extends ItemView {
     var header = this.tableEl.createEl('tr');
     header.createEl('th', {text: 'Character', cls: 'name-Cell'});
     header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell'});
-    header.createEl('th', {text: 'FTA', title: "Free Triggered Action"});
+    header.createEl('th', {text: 'TA', title: "Triggered Action"});
     header.createEl('th', {text: 'Acted'});
 
     var createButtonHeader = header.createEl('th');
