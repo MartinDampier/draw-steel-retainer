@@ -71,6 +71,15 @@
     width: 100%;
 }
 
+.heroes {
+    border-color: var(--color-green);
+    border-width: 2px;
+}
+
+.villains {
+    border-color: var(--color-red);
+    border-width: 2px;
+}
 table{
     border: 1px solid black;
     border-collapse: collapse;

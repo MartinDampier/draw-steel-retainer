@@ -2,11 +2,14 @@ import { createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
 import { VIEW_TYPE_EXAMPLE, Red, Green, Yes, No, Fill } from 'lib/Models/Constants';
 import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent } from 'obsidian';
+import { isSharedArrayBuffer } from 'util/types';
 
 export class ExampleView extends ItemView {
   gridEl: HTMLDivElement;
   formEl: HTMLDivElement;
-  tableEl: HTMLDivElement;
+  roundEl: HTMLDivElement;
+  heroesTableEl: HTMLDivElement;
+  villainsTableEl: HTMLDivElement;
   nameInput: TextComponent;
   staminaInput: TextComponent;
   creatures: Creature[] = [];
@@ -35,15 +38,16 @@ export class ExampleView extends ItemView {
   }
   async onOpen() {
     this.contentEl.empty();
-
     this.gridEl = this.contentEl.createDiv();
-
     this.createInputSection();
-    this.createTable();
+    this.gridEl.createEl('h3', {text: "Heroes"})
+    this.createTable(true);
+    this.gridEl.createEl('h3', {text: "Villains"})
+    this.createTable(false);
   }
 
   async onClose() {
-    // Nothing to clean up.
+    // Nothing to clean up. FOR NOW
   }
 
   createInputSection() {
@@ -53,18 +57,21 @@ export class ExampleView extends ItemView {
     this.staminaInput = new TextComponent(this.formEl).setPlaceholder("Max Stamina");
     this.staminaInput.inputEl.addClass("padded-input");
    
-    var createButtonComp = new ButtonComponent(this.formEl);
-    createButtonComp.setButtonText("Create");
-    createButtonComp.onClick( () => this.createCreatureRow());
+    var heroButtonComp = new ButtonComponent(this.formEl);
+    heroButtonComp.setButtonText("Hero");
+    heroButtonComp.onClick( () => this.createCreatureRow(undefined, true));
+    var villainButtonComp = new ButtonComponent(this.formEl);
+    villainButtonComp.setButtonText("Villain");
+    villainButtonComp.onClick( () => this.createCreatureRow(undefined, false));
     this.setRound(0);
     this.setMalice(0);
   }
  
+  createRoundSection(){
+    this.gridEl.createDiv();
+  }
+
   setMalice(malice: number){
-    if (this.formEl.children.length >= 5)
-      {
-        this.formEl.children[4].remove();
-      }
       this.malice = malice;
       var div = this.formEl.createDiv({text: "Malice: " + this.malice, cls: "rightAlign"});
       var plusMalice = new ButtonComponent(div);
@@ -84,10 +91,6 @@ export class ExampleView extends ItemView {
   }
 
   setRound(round: number){
-    if (this.formEl.children.length >= 4)
-    {
-      this.formEl.children[3].remove();
-    }
     this.round = round;
     var div = this.formEl.createDiv({text: "Round: " + this.round, cls: "rightAlign"});
     var resetRoundsButton = new ButtonComponent(div);
@@ -99,7 +102,7 @@ export class ExampleView extends ItemView {
     });
   }
 
-  createCreatureRow(creature: Creature = {Name: "", Stamina: 0, Id: "0", HasActed: false}){
+  createCreatureRow(creature: Creature = {Name: "", Stamina: 0, Id: "0", HasActed: false}, isHero: boolean){
     if (creature.Name == "")
     {
       if (this.nameInput.getValue() == "")
@@ -112,13 +115,21 @@ export class ExampleView extends ItemView {
       creature.Stamina = +this.staminaInput.getValue();
       this.staminaInput.setValue('');
     }
-    this.addRow(creature);
+    this.addRow(creature, isHero);
   }
 
   //Create a HTML Table
-  createTable() {
-    this.tableEl = this.gridEl.createEl('table', {cls: "Centered"});
-    var header = this.tableEl.createEl('tr');
+  createTable(isHero: boolean) {
+    var classes = "Centered" + (isHero ? " heroes" : " villains")
+    if (isHero)
+    {
+      this.heroesTableEl = this.gridEl.createEl('table', {cls: classes});
+    }
+    else
+    {
+      this.villainsTableEl = this.gridEl.createEl('table', {cls: classes});
+    }
+    var header = isHero ? this.heroesTableEl.createEl('tr') : this.villainsTableEl.createEl('tr');
     header.createEl('th', {text: 'Character', cls: 'name-Cell'});
     header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell'});
     header.createEl('th', {text: 'TA', title: "Triggered Action"});
@@ -126,14 +137,6 @@ export class ExampleView extends ItemView {
 
     var createButtonHeader = header.createEl('th');
     var resetButtonComp = new ButtonComponent(createButtonHeader)
-
-    resetButtonComp.setButtonText("New Round");
-    resetButtonComp.setClass("headerButtonLeft");
-    resetButtonComp.onClick( () => {
-      this.newRound();
-    });
-    var resetButtonComp = new ButtonComponent(createButtonHeader)
-
     resetButtonComp.setButtonText("Clear");
     resetButtonComp.setClass("headerButtonRight");
     resetButtonComp.onClick( () => {
@@ -141,15 +144,15 @@ export class ExampleView extends ItemView {
     });
     if (this.creatures.length > -1)
       {
-        this.creatures.forEach((creature) => this.createCreatureRow(creature));
+        this.creatures.forEach((creature) => this.createCreatureRow(creature, isHero));
       }
     //buttonHeader.createEl('button', { text: "Create"});
   }
 
-  addRow(creature: Creature){
+  addRow(creature: Creature, isHero: boolean){
     try{
       this.creatures.push(creature);
-      var row = this.tableEl.createEl('tr', {cls: "Centered"});
+      var row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered"}) : this.villainsTableEl.createEl('tr', {cls: "Centered"});
       var nameCell = row.createEl('td', {text: creature.Name, cls: "Centered name-Cell"});
       nameCell.createEl("br");
       var nameCellDiv = nameCell.createDiv({cls: "condition-buttons"});
@@ -267,11 +270,11 @@ export class ExampleView extends ItemView {
 
   newRound()
   {
-    var count = this.tableEl.children.length;
+    var count = this.heroesTableEl.children.length;
     this.setRound(++this.round);
     for (var i = 1; i < count; i++)
     {
-        var row =  (this.tableEl.children[i] as (HTMLTableRowElement));
+        var row =  (this.heroesTableEl.children[i] as (HTMLTableRowElement));
         var button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
         var triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
         button.textContent = No;
@@ -285,9 +288,9 @@ export class ExampleView extends ItemView {
   }
 
   removeAllRows(){
-    for(var i = 1; i < this.tableEl.children.length; i++)
+    for(var i = 1; i < this.heroesTableEl.children.length; i++)
     {
-      this.tableEl.children[i].remove();
+      this.heroesTableEl.children[i].remove();
     }
   }
 }
