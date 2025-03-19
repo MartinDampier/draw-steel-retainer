@@ -4,7 +4,7 @@ import { VIEW_TYPE_EXAMPLE, Red, Green, Yes, No, Fill } from 'lib/Models/Constan
 import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent } from 'obsidian';
 import { isSharedArrayBuffer } from 'util/types';
 
-export class ExampleView extends ItemView {
+export class InitiativeView extends ItemView {
   gridEl: HTMLDivElement;
   formEl: HTMLDivElement;
   roundEl: HTMLDivElement;
@@ -16,7 +16,7 @@ export class ExampleView extends ItemView {
   heroes: Creature[] = [];
   creatures: Creature[] = [];
   buttons: ButtonComponent[] = [];
-  round: number;
+  round: number = 1;
   malice: number;
 
   constructor(leaf: WorkspaceLeaf, villains?: Creature[], heroes?: Creature[]) {
@@ -69,42 +69,53 @@ export class ExampleView extends ItemView {
     var villainButtonComp = new ButtonComponent(this.formEl);
     villainButtonComp.setButtonText("Villain");
     villainButtonComp.onClick( () => this.createCreatureRow(undefined, false));
-    this.setRound(0);
-    this.setMalice(0);
+    this.createRoundSection();
   }
  
   createRoundSection(){
-    this.gridEl.createDiv();
+    this.roundEl= this.gridEl.createDiv( {cls: "tableStyle "});
+    this.setRound(0);
+    this.setMalice(0);
   }
 
-  setMalice(malice: number){
-      this.malice = malice;
-      var div = this.formEl.createDiv({text: "Malice: " + this.malice, cls: "rightAlign"});
+  setMalice(malice: number, div? : HTMLDivElement){
+    this.malice = malice;
+    div = div ?? this.roundEl.createDiv({cls: "rightAlign maliceHeader"});
+    div.setText("Malice: " + this.malice);
       var plusMalice = new ButtonComponent(div);
       plusMalice.setButtonText("+1");
       plusMalice.setClass("headerButtonLeft");
       plusMalice.onClick( () => {
         this.malice++;
-        this.setMalice(this.malice);
+        this.setMalice(this.malice, div);
       });
       var minusMalice = new ButtonComponent(div);
       minusMalice.setButtonText("-1");
       minusMalice.setClass("headerButtonLeft");
       minusMalice.onClick( () => {
         this.malice--;
-        this.setMalice(this.malice);
+        this.setMalice(this.malice, div);
       });
   }
 
-  setRound(round: number){
+  setRound(round: number, div? : HTMLDivElement){
     this.round = round;
-    var div = this.formEl.createDiv({text: "Round: " + this.round, cls: "rightAlign"});
+    div = div ?? this.roundEl.createDiv({ cls: "leftAlign roundHeader"});
+    div.setText("Round: " + this.round);
+    var resetRoundsButton = new ButtonComponent(div);
+    resetRoundsButton.setButtonText("New");
+    resetRoundsButton.setClass("headerButtonLeft");
+    resetRoundsButton.onClick( () => {
+      if (div != undefined)
+        this.newRound(div);
+    });
     var resetRoundsButton = new ButtonComponent(div);
     resetRoundsButton.setButtonText("Reset");
     resetRoundsButton.setClass("headerButtonLeft");
     resetRoundsButton.onClick( () => {
       this.round == 0;
-      this.setRound(0);
+      this.setRound(0, div);
+      this.resetActed();
     });
   }
 
@@ -277,23 +288,39 @@ export class ExampleView extends ItemView {
     }
   }
 
-  newRound()
+  newRound(div: HTMLDivElement)
   {
-    var count = this.heroesTableEl.children.length;
-    this.setRound(++this.round);
-    for (var i = 1; i < count; i++)
-    {
-        var row =  (this.heroesTableEl.children[i] as (HTMLTableRowElement));
-        var button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
-        var triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
-        button.textContent = No;
-        triggeredActionButton.textContent = No;
-        row.children[3].removeClass(Red);
-        row.children[2].removeClass(Red);
-        row.children[3].addClass(Green);
-        row.children[2].addClass(Green);
-    }
+    this.setRound(++this.round, div);
+    this.resetActed();
+  }
 
+  resetActed() {
+    var count = this.heroesTableEl.children.length;
+    for (var i = 1; i < count; i++)
+      {
+          var row =  (this.heroesTableEl.children[i] as (HTMLTableRowElement));
+          var button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
+          var triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
+          button.textContent = No;
+          triggeredActionButton.textContent = No;
+          row.children[3].removeClass(Red);
+          row.children[2].removeClass(Red);
+          row.children[3].addClass(Green);
+          row.children[2].addClass(Green);
+      }
+    var count = this.villainsTableEl.children.length;
+    for (var i = 1; i < count; i++)
+      {
+          var row =  (this.villainsTableEl.children[i] as (HTMLTableRowElement));
+          var button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
+          var triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
+          button.textContent = No;
+          triggeredActionButton.textContent = No;
+          row.children[3].removeClass(Red);
+          row.children[2].removeClass(Red);
+          row.children[3].addClass(Green);
+          row.children[2].addClass(Green);
+      }
   }
 
   removeAllRows(){

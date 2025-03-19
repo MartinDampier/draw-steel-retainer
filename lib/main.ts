@@ -1,5 +1,5 @@
 import { App, ButtonComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
-import { ExampleView } from './Views/InitiativeTrackerView';
+import { InitiativeView } from './Views/InitiativeTrackerView';
 import { VIEW_TYPE_EXAMPLE, TableFormat, TableFlag } from 'lib/Models/Constants';
 import Creature from 'lib/Models/Creature';
 import {MyPluginSettings, DEFAULT_SETTINGS} from 'lib/Settings'
@@ -13,7 +13,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		await this.loadSettings();
 		this.registerView(
 			VIEW_TYPE_EXAMPLE,
-			(leaf) => new ExampleView(leaf, this.creatures, this.settings.playerCharacters)
+			(leaf) => new InitiativeView(leaf, this.creatures, this.settings.playerCharacters)
 		  );
 
 		  this.addRibbonIcon('scroll-text', 'DRAW STEEL! (Initiative Tracker)', () => {
