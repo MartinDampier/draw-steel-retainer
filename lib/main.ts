@@ -2,19 +2,8 @@ import { App, ButtonComponent, Editor, MarkdownView, Modal, Notice, Plugin, Plug
 import { ExampleView } from './Views/InitiativeTrackerView';
 import { VIEW_TYPE_EXAMPLE, TableFormat, TableFlag } from 'lib/Models/Constants';
 import Creature from 'lib/Models/Creature';
-import { start } from 'repl';
-import { setFlagsFromString } from 'v8';
+import {MyPluginSettings, DEFAULT_SETTINGS} from 'lib/Settings'
 // Remember to rename these classes and interfaces!
-
-interface MyPluginSettings {
-	mySetting: string;
-	playerCharacters: Creature[];
-}
-
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default',
-	playerCharacters: [],
-}
 
 export default class ForbiddenLandsCharacterSheet extends Plugin {
 	settings: MyPluginSettings;
@@ -124,10 +113,12 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		console.log("Settings Loaded");
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+		console.log("Settings Saved");
 	}
 }
 
@@ -151,34 +142,63 @@ class SampleSettingTab extends PluginSettingTab {
 			.setButtonText("Add Player Character")
 			.setClass("rightAlign")
 			.onClick( () => {
-
-				var player = new Creature();
-				this.plugin.settings.playerCharacters.push(player);
-
-				var staminaInput = '';
-
-				new Setting(containerEl)
-				.setName('Player Character')
-				.setDesc('Set the PC\'s Name and Stamina')
-				.addText(text => text
-					.setPlaceholder('Name')
-					.setValue(player.Name)
-					.onChange(async (value) => {
-						console.log('Secret: ' + value);
-						player.Name = value;
-						await this.plugin.saveSettings();
-					}))
-				.addText(text => text
-					.setPlaceholder('Stamina')
-					.setValue(staminaInput)
-					.onChange(async (value) => {
-						console.log('Secret: ' + value);
-						if (value != null && value != "")
-						{
-							player.Stamina = +value;
-						}
-						await this.plugin.saveSettings();
-					}));
+				this.buildCharacterInput(containerEl)
 			} );
+		new ButtonComponent(div)
+			.setButtonText("Save")
+			.setClass("rightAlign")
+			.onClick( () => {
+				this.plugin.saveSettings();
+			} );
+	    console.log(this.plugin.settings.playerCharacters.length);
+	    console.log(containerEl.children.length);
+		console.log("Adding Characters");
+		this.plugin.settings.playerCharacters.forEach((x) => this.buildCharacterInput(containerEl, x))
+	}
+
+	buildCharacterInput(containerEl: HTMLElement, character?: Creature){
+		console.log("HI!!!!");
+		var player = character ?? new Creature();
+		
+		if (character == undefined)
+		{
+			this.plugin.settings.playerCharacters.push(player);
+		}
+
+		var staminaInput = player.Stamina.toString();
+		var setting = new Setting(containerEl)
+		.setName('Player Character')
+		.setDesc('Set the PC\'s Name and Stamina')
+		.addText(text => text
+			.setPlaceholder('Name')
+			.setValue(player.Name)
+			.onChange(async (value) => {
+				console.log('Secret: ' + value);
+				player.Name = value;
+				await this.plugin.saveSettings();
+			}))
+		.addText(text => text
+			.setPlaceholder('Stamina')
+			.setValue(staminaInput)
+			.onChange(async (value) => {
+				console.log('Secret: ' + value);
+				if (value != null && value != "")
+				{
+					player.Stamina = +value;
+				}
+				await this.plugin.saveSettings();
+			}))
+		.addButton((button: ButtonComponent): ButtonComponent => {
+			let b = button.setButtonText("Delete").onClick(() => {
+				this.plugin.settings.playerCharacters.remove(player);
+				setting.controlEl.remove();
+				setting.nameEl.remove();
+				setting.descEl.remove();
+				setting.infoEl.remove();
+				setting.settingEl.remove();
+			});
+			return b;
+		});
+					
 	}
 }
