@@ -11,10 +11,9 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-
 		this.registerView(
 			VIEW_TYPE_EXAMPLE,
-			(leaf) => new ExampleView(leaf, this.creatures)
+			(leaf) => new ExampleView(leaf, this.creatures, this.settings.playerCharacters)
 		  );
 
 		  this.addRibbonIcon('scroll-text', 'DRAW STEEL! (Initiative Tracker)', () => {
@@ -165,7 +164,7 @@ class SampleSettingTab extends PluginSettingTab {
 			this.plugin.settings.playerCharacters.push(player);
 		}
 
-		var staminaInput = player.Stamina.toString();
+		var staminaInput = player.Stamina == undefined ? '' : player.Stamina.toString();
 		var setting = new Setting(containerEl)
 		.setName('Player Character')
 		.setDesc('Set the PC\'s Name and Stamina')

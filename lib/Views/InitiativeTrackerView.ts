@@ -12,16 +12,22 @@ export class ExampleView extends ItemView {
   villainsTableEl: HTMLDivElement;
   nameInput: TextComponent;
   staminaInput: TextComponent;
+  villains: Creature[] = [];
+  heroes: Creature[] = [];
   creatures: Creature[] = [];
   buttons: ButtonComponent[] = [];
   round: number;
   malice: number;
 
-  constructor(leaf: WorkspaceLeaf, creatures?: Creature[]) {
+  constructor(leaf: WorkspaceLeaf, villains?: Creature[], heroes?: Creature[]) {
     super(leaf);
-    if (creatures != null && creatures.length > -1)
+    if (villains != null && villains.length > -1)
     {
-      this.creatures = creatures;
+      this.villains = villains;
+    }
+    if (heroes != null && heroes.length > -1)
+    {
+      this.heroes = heroes;
     }
   }
 
@@ -142,10 +148,13 @@ export class ExampleView extends ItemView {
     resetButtonComp.onClick( () => {
       this.removeAllRows();
     });
-    if (this.creatures.length > -1)
-      {
-        this.creatures.forEach((creature) => this.createCreatureRow(creature, isHero));
-      }
+    if (isHero && this.heroes.length > -1)
+    {
+      this.heroes.forEach((creature) => this.createCreatureRow(creature, isHero));
+    }
+    else if (!isHero && this.villains.length > -1){
+      this.villains.forEach((creature) => this.createCreatureRow(creature, isHero));
+    }
     //buttonHeader.createEl('button', { text: "Create"});
   }
 
