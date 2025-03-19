@@ -1,7 +1,7 @@
 {
-	"name": "draw-steel-companion",
+	"name": "draw-steel-initiative",
 	"version": "0.0.2",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "This plugin creates a initiative tracker that can be used for the MCDM rpg Draw Steel.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

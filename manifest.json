@@ -1,9 +1,9 @@
 {
-	"id": "Draw-Steel-Companion",
-	"name": "Draw Steel Companion",
+	"id": "Draw-Steel-Initiative",
+	"name": "Draw Steel Initiative",
 	"version": "0.0.2",
 	"minAppVersion": "0.15.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
+	"description": "This plugin creates a initiative tracker that can be used for the MCDM rpg Draw Steel.",
 	"author": "Herotek",
 	"authorUrl": "https://obsidian.md",
 	"fundingUrl": "https://obsidian.md/pricing",
