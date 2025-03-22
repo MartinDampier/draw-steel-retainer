@@ -23,6 +23,10 @@
     display: table-cell;
 }
 
+.villainsButton {
+    margin-left: 5px;
+}
+
 .maliceHeader {
     width: 50%;
     display: table-cell;
@@ -49,7 +53,7 @@
 
 .padded-input {
     margin: 5px;
-    width: 40%;
+    width: 42%;
 }
 
 .rightAlign {

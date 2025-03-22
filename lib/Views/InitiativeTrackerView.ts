@@ -68,6 +68,7 @@ export class InitiativeView extends ItemView {
     heroButtonComp.onClick( () => this.createCreatureRow(undefined, true));
     var villainButtonComp = new ButtonComponent(this.formEl);
     villainButtonComp.setButtonText("Villain");
+    villainButtonComp.setClass("villainsButton");
     villainButtonComp.onClick( () => this.createCreatureRow(undefined, false));
     this.createRoundSection();
   }
@@ -118,23 +119,6 @@ export class InitiativeView extends ItemView {
       this.resetActed();
     });
   }
-
-  createCreatureRow(creature: Creature = {Name: "", Stamina: 0, Id: "0", HasActed: false}, isHero: boolean){
-    if (creature.Name == "")
-    {
-      if (this.nameInput.getValue() == "")
-      {
-        return;
-      }
-      creature.Id = (this.creatures.length + 1).toString();
-      creature.Name = this.nameInput.getValue();
-      this.nameInput.setValue('');
-      creature.Stamina = +this.staminaInput.getValue();
-      this.staminaInput.setValue('');
-    }
-    this.addRow(creature, isHero);
-  }
-
   //Create a HTML Table
   createTable(isHero: boolean) {
     var classes = "Centered" + (isHero ? " heroes" : " villains")
@@ -151,7 +135,7 @@ export class InitiativeView extends ItemView {
     header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell'});
     header.createEl('th', {text: 'TA', title: "Triggered Action"});
     header.createEl('th', {text: 'Acted'});
-
+    
     var createButtonHeader = header.createEl('th');
     var resetButtonComp = new ButtonComponent(createButtonHeader)
     resetButtonComp.setButtonText("Clear");
@@ -160,19 +144,41 @@ export class InitiativeView extends ItemView {
       this.removeAllRows();
     });
     if (isHero && this.heroes.length > -1)
-    {
-      this.heroes.forEach((creature) => this.createCreatureRow(creature, isHero));
+      {
+        this.heroes.forEach((creature) => this.createCreatureRow(creature, isHero));
+      }
+      else if (!isHero && this.villains.length > -1){
+        this.villains.forEach((creature) => this.createCreatureRow(creature, isHero));
+      }
+      //buttonHeader.createEl('button', { text: "Create"});
     }
-    else if (!isHero && this.villains.length > -1){
-      this.villains.forEach((creature) => this.createCreatureRow(creature, isHero));
-    }
-    //buttonHeader.createEl('button', { text: "Create"});
-  }
 
-  addRow(creature: Creature, isHero: boolean){
-    try{
-      this.creatures.push(creature);
+    createCreatureRow(creature: Creature = new Creature, isHero: boolean){
+      if (creature.Name == "")
+      {
+        if (this.nameInput.getValue() == "")
+        {
+          return;
+        }
+        creature.Id = (this.creatures.length + 1).toString();
+        creature.Name = this.nameInput.getValue();
+        this.nameInput.setValue('');
+        creature.MaxStamina = this.staminaInput != undefined ? +this.staminaInput.getValue() : 0;
+        creature.IsHero = isHero;
+        this.staminaInput.setValue('');
+      }
+      creature.CurrentStamina = creature.MaxStamina;
+      this.addRow(creature, isHero);
+    }
+    
+    addRow(creature: Creature, isHero: boolean){
+      try{
+        if (isHero)
+          this.heroes.push(creature);
+      else
+        this.villains.push(creature);
       var row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered"}) : this.villainsTableEl.createEl('tr', {cls: "Centered"});
+      row.id = isHero ? "Hero " + this.heroes.indexOf(creature) : "Villain " + this.villains.indexOf(creature);
       var nameCell = row.createEl('td', {text: creature.Name, cls: "Centered name-Cell"});
       nameCell.createEl("br");
       var nameCellDiv = nameCell.createDiv({cls: "condition-buttons"});
@@ -194,9 +200,8 @@ export class InitiativeView extends ItemView {
       button8.onClick( () => this.toggleColors(button8) )
       var button9 = new ExtraButtonComponent(nameCellDiv).setIcon("heart-crack").setTooltip("Weakened"); //Weakened
       button9.onClick( () => this.toggleColors(button9) )
-      row.id = creature.Id;
       row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell"})
-      this.updateStamina(row, creature.Stamina.toString())
+      this.updateStamina(row, creature.CurrentStamina.toString())
       var buttonCell = row.createEl('td', {cls: Green});
       var buttonComp = new ButtonComponent(buttonCell);
       buttonComp.setButtonText(No);
@@ -223,7 +228,11 @@ export class InitiativeView extends ItemView {
     }
     catch(e)
     {
-      console.log(e);
+      if (e instanceof Error) 
+      {
+        console.log(e.message);
+        console.log(e.name);
+      }
     }
   }
 
@@ -242,8 +251,19 @@ export class InitiativeView extends ItemView {
   updateStamina(row: HTMLTableRowElement, stamina: string){
     try{
       var staminaCell = row.children[1] as HTMLTableCellElement;
+      console.log("updateStamina parent Id: " + staminaCell.parentElement?.id);
+      var parsedId = staminaCell.parentElement?.id.split(" ");
+      var maxStamina = 0;
+      if (parsedId != undefined) {
+        if (parsedId[0] == "Hero"){
+          maxStamina = this.heroes[+parsedId[1]].MaxStamina;
+        } else
+        {
+          maxStamina = this.villains[+parsedId[1]].MaxStamina;
+        }
+      }
       staminaCell.empty();
-      staminaCell.setText(stamina);
+      staminaCell.setText('('+maxStamina+') '+ stamina);
       staminaCell.createEl('br');
       new ButtonComponent(staminaCell).setButtonText("-5").onClick(() => {this.updateStamina(row, (+stamina - 5).toString())}).setClass('slimButton');
       new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString())}).setClass('slimButton');

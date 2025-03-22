@@ -69,7 +69,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 				var cells = sample.split("|");
 				var creature = new Creature();
 				creature.Name = cells[1];
-				creature.Stamina = +cells[2];
+				creature.MaxStamina = +cells[2];
 				creature.Id = creatures.length.toString();
 				creatures.push(creature);
 			}
@@ -143,12 +143,6 @@ class SampleSettingTab extends PluginSettingTab {
 			.onClick( () => {
 				this.buildCharacterInput(containerEl)
 			} );
-		new ButtonComponent(div)
-			.setButtonText("Save")
-			.setClass("rightAlign")
-			.onClick( () => {
-				this.plugin.saveSettings();
-			} );
 	    console.log(this.plugin.settings.playerCharacters.length);
 	    console.log(containerEl.children.length);
 		console.log("Adding Characters");
@@ -164,7 +158,7 @@ class SampleSettingTab extends PluginSettingTab {
 			this.plugin.settings.playerCharacters.push(player);
 		}
 
-		var staminaInput = player.Stamina == undefined ? '' : player.Stamina.toString();
+		var staminaInput = player.MaxStamina == undefined ? '' : player.MaxStamina.toString();
 		var setting = new Setting(containerEl)
 		.setName('Player Character')
 		.setDesc('Set the PC\'s Name and Stamina')
@@ -183,18 +177,19 @@ class SampleSettingTab extends PluginSettingTab {
 				console.log('Secret: ' + value);
 				if (value != null && value != "")
 				{
-					player.Stamina = +value;
+					player.MaxStamina = +value;
 				}
 				await this.plugin.saveSettings();
 			}))
 		.addButton((button: ButtonComponent): ButtonComponent => {
-			let b = button.setButtonText("Delete").onClick(() => {
+			let b = button.setButtonText("Delete").onClick(async () => {
 				this.plugin.settings.playerCharacters.remove(player);
 				setting.controlEl.remove();
 				setting.nameEl.remove();
 				setting.descEl.remove();
 				setting.infoEl.remove();
 				setting.settingEl.remove();
+				await this.plugin.saveSettings();
 			});
 			return b;
 		});
