@@ -1,4 +1,4 @@
-export const VIEW_TYPE_EXAMPLE = 'example-view';
+export const INITIATIVE_VIEW = 'initiative-view';
 export const Yes = 'Yes';
 export const No = 'No';
 export const Red = 'red';

@@ -1,6 +1,6 @@
 import { App, ButtonComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
 import { InitiativeView } from './Views/InitiativeTrackerView';
-import { VIEW_TYPE_EXAMPLE, TableFormat, TableFlag } from 'lib/Models/Constants';
+import { INITIATIVE_VIEW, TableFormat, TableFlag } from 'lib/Models/Constants';
 import Creature from 'lib/Models/Creature';
 import {MyPluginSettings, DEFAULT_SETTINGS} from 'lib/Settings'
 import { CreatureTypes } from './Models/CreatureTypes';
@@ -13,7 +13,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		this.registerView(
-			VIEW_TYPE_EXAMPLE,
+			INITIATIVE_VIEW,
 			(leaf) => new InitiativeView(leaf, this.creatures, this.settings.playerCharacters)
 		  );
 
@@ -25,41 +25,41 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		const statusBarItemEl = this.addStatusBarItem();
 		statusBarItemEl.setText('Status Bar Text');
 		
-		this.addCommands();
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		// this.addCommands();
+		// This adds a settings tab so the user can configure letious aspects of the plugin
+		this.addSettingTab(new RetainerSettingTab(this.app, this));
 	}
 
-	addCommands(){
-		this.addCommand({
-			id: "insert-initiative-table",
-			name: "Insert Initiative Table",
-			editorCallback: (editor: Editor) => { 
-				editor.replaceRange(TableFormat, editor.getCursor());
-			}
-		});
-		// this.addCommand({
-		// 	id: 'import-table-to-tracker',
-		// 	name: 'Import Table To Tracker',
-		// 	editorCallback: (editor: Editor) => {
-		// 		this.importSelectionToTracker(editor);
-		// 	}
-		// });
-	}
+	// addCommands(){
+	// 	this.addCommand({
+	// 		id: "insert-initiative-table",
+	// 		name: "Insert Initiative Table",
+	// 		editorCallback: (editor: Editor) => { 
+	// 			editor.replaceRange(TableFormat, editor.getCursor());
+	// 		}
+	// 	});
+	// 	// this.addCommand({
+	// 	// 	id: 'import-table-to-tracker',
+	// 	// 	name: 'Import Table To Tracker',
+	// 	// 	editorCallback: (editor: Editor) => {
+	// 	// 		this.importSelectionToTracker(editor);
+	// 	// 	}
+	// 	// });
+	// }
 
 	importSelectionToTracker(editor: Editor){
 		if(!(editor.somethingSelected())) {
 			return;
 		}
 
-		var selection = editor.getSelection();
-		var done = false;
-		var lines: string[] = [];
+		let selection = editor.getSelection();
+		let done = false;
+		let lines: string[] = [];
 		lines = selection.split('\n');
-		var flagFound = false;
-		var creatures = [];
-		for(var i = 0; i < lines.length; i++){
-			var sample = lines[i];
+		let flagFound = false;
+		let creatures = [];
+		for(let i = 0; i < lines.length; i++){
+			let sample = lines[i];
 			if (sample.contains(TableFlag))
 			{
 				flagFound = true;
@@ -67,8 +67,8 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 			}
 			if (flagFound && sample.contains("|"))
 			{
-				var cells = sample.split("|");
-				var creature = new Creature();
+				let cells = sample.split("|");
+				let creature = new Creature();
 				creature.Name = cells[1];
 				creature.MaxStamina = +cells[2];
 				creature.Id = creatures.length.toString();
@@ -91,7 +91,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		const { workspace } = this.app;
 	
 		let leaf: WorkspaceLeaf | null = null;
-		const leaves = workspace.getLeavesOfType(VIEW_TYPE_EXAMPLE);
+		const leaves = workspace.getLeavesOfType(INITIATIVE_VIEW);
 	
 		if (leaves.length > 0) {
 		  // A leaf with our view already exists, use that
@@ -103,7 +103,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		  
 		  leaf = workspace.getRightLeaf(false);
 		  if (leaf != null)
-			await leaf.setViewState({ type: VIEW_TYPE_EXAMPLE, active: true });
+			await leaf.setViewState({ type: INITIATIVE_VIEW, active: true });
 		}
 	
 		// "Reveal" the leaf in case it is in a collapsed sidebar
@@ -122,7 +122,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
+class RetainerSettingTab extends PluginSettingTab {
 	plugin: ForbiddenLandsCharacterSheet;
 
 	constructor(app: App, plugin: ForbiddenLandsCharacterSheet) {
@@ -137,7 +137,7 @@ class SampleSettingTab extends PluginSettingTab {
 
 		containerEl.createEl('h1', {text: 'Draw Steel Companion Settings'});
 
-		var div = containerEl.createDiv({cls: "rightAlign bottomSpace"});
+		let div = containerEl.createDiv({cls: "rightAlign bottomSpace"});
 		new ButtonComponent(div)
 			.setButtonText("Add Player Character")
 			.setClass("rightAlign")
@@ -148,15 +148,15 @@ class SampleSettingTab extends PluginSettingTab {
 	}
 
 	buildCharacterInput(containerEl: HTMLElement, character?: Creature){
-		var player = character ?? new Creature();
+		let player = character ?? new Creature();
 		player.Type = CreatureTypes.Hero;
 		if (character == undefined)
 		{
 			this.plugin.settings.playerCharacters.push(player);
 		}
 
-		var staminaInput = player.MaxStamina == undefined ? '' : player.MaxStamina.toString();
-		var setting = new Setting(containerEl)
+		let staminaInput = player.MaxStamina == undefined ? '' : player.MaxStamina.toString();
+		let setting = new Setting(containerEl)
 		.setName('Player Character')
 		.setDesc('Set the PC\'s Name and Stamina')
 		.addText(text => text

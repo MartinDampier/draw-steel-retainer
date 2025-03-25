@@ -1,6 +1,6 @@
 import { createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
-import { VIEW_TYPE_EXAMPLE, Red, Green, Yes, No, Fill } from 'lib/Models/Constants';
+import { INITIATIVE_VIEW, Red, Green, Yes, No, Fill } from 'lib/Models/Constants';
 import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent, DropdownComponent } from 'obsidian';
 import { isSharedArrayBuffer } from 'util/types';
 import { CreatureTypes } from 'lib/Models/CreatureTypes';
@@ -35,7 +35,7 @@ export class InitiativeView extends ItemView {
   }
 
   getViewType() {
-    return VIEW_TYPE_EXAMPLE;
+    return INITIATIVE_VIEW;
   }
 
   getDisplayText() {
@@ -105,11 +105,11 @@ export class InitiativeView extends ItemView {
         }
       });
     this.typeInput.selectEl.addClass("padded-input");
-    var heroButtonComp = new ButtonComponent(this.formEl);
+    let heroButtonComp = new ButtonComponent(this.formEl);
     heroButtonComp.setButtonText("Hero");
     heroButtonComp.setClass("padded-input");
     heroButtonComp.onClick( () => this.createCreatureRow(undefined, true));
-    var villainButtonComp = new ButtonComponent(this.formEl);
+    let villainButtonComp = new ButtonComponent(this.formEl);
     villainButtonComp.setButtonText("Villain");
     villainButtonComp.setClass("padded-input");
     villainButtonComp.onClick( () => this.createCreatureRow(undefined, false));
@@ -126,14 +126,14 @@ export class InitiativeView extends ItemView {
     this.malice = malice;
     div = div ?? this.roundEl.createDiv({cls: "rightAlign maliceHeader"});
     div.setText("Malice: " + this.malice);
-      var plusMalice = new ButtonComponent(div);
+      let plusMalice = new ButtonComponent(div);
       plusMalice.setButtonText("+1");
       plusMalice.setClass("headerButtonLeft");
       plusMalice.onClick( () => {
         this.malice++;
         this.setMalice(this.malice, div);
       });
-      var minusMalice = new ButtonComponent(div);
+      let minusMalice = new ButtonComponent(div);
       minusMalice.setButtonText("-1");
       minusMalice.setClass("headerButtonLeft");
       minusMalice.onClick( () => {
@@ -146,14 +146,14 @@ export class InitiativeView extends ItemView {
     this.round = round;
     div = div ?? this.roundEl.createDiv({ cls: "leftAlign roundHeader"});
     div.setText("Round: " + this.round);
-    var resetRoundsButton = new ButtonComponent(div);
-    resetRoundsButton.setButtonText("New");
-    resetRoundsButton.setClass("headerButtonLeft");
-    resetRoundsButton.onClick( () => {
+    var newRoundButton = new ButtonComponent(div);
+    newRoundButton.setButtonText("New");
+    newRoundButton.setClass("headerButtonLeft");
+    newRoundButton.onClick( () => {
       if (div != undefined)
         this.newRound(div);
     });
-    var resetRoundsButton = new ButtonComponent(div);
+    let resetRoundsButton = new ButtonComponent(div);
     resetRoundsButton.setButtonText("Reset");
     resetRoundsButton.setClass("headerButtonLeft");
     resetRoundsButton.onClick( () => {
@@ -164,7 +164,7 @@ export class InitiativeView extends ItemView {
   }
   //Create a HTML Table
   createTable(isHero: boolean) {
-    var classes = "Centered" + (isHero ? " heroes" : " villains")
+    let classes = "Centered" + (isHero ? " heroes" : " villains")
     if (isHero)
     {
       this.heroesTableEl = this.gridEl.createEl('table', {cls: classes});
@@ -173,14 +173,14 @@ export class InitiativeView extends ItemView {
     {
       this.villainsTableEl = this.gridEl.createEl('table', {cls: classes});
     }
-    var header = isHero ? this.heroesTableEl.createEl('tr') : this.villainsTableEl.createEl('tr');
+    let header = isHero ? this.heroesTableEl.createEl('tr') : this.villainsTableEl.createEl('tr');
     header.createEl('th', {text: 'Character', cls: 'name-Cell'});
     header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell'});
     header.createEl('th', {text: 'TA', title: "Triggered Action"});
     header.createEl('th', {text: 'Acted'});
     
-    var createButtonHeader = header.createEl('th');
-    var resetButtonComp = new ButtonComponent(createButtonHeader)
+    let createButtonHeader = header.createEl('th');
+    let resetButtonComp = new ButtonComponent(createButtonHeader)
     resetButtonComp.setButtonText("Clear");
     resetButtonComp.setClass("headerButtonRight");
     if (isHero) {
@@ -237,48 +237,48 @@ export class InitiativeView extends ItemView {
           this.heroes.push(creature);
       else
         this.villains.push(creature);
-      var row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered"}) : this.villainsTableEl.createEl('tr', {cls: "Centered"});
+      let row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered"}) : this.villainsTableEl.createEl('tr', {cls: "Centered"});
       row.id = isHero ? "Hero " + this.heroes.indexOf(creature) : "Villain " + this.villains.indexOf(creature);
-      var nameCell = row.createEl('td', {text: creature.Name, cls: "Centered name-Cell"});
+      let nameCell = row.createEl('td', {text: creature.Name, cls: "Centered name-Cell"});
       nameCell.createDiv({text: creature.Type?.toString(), cls: "verticalType topAlign"})
       nameCell.createEl("br");
-      var nameCellDiv = nameCell.createDiv({cls: "condition-buttons"});
-      var button1 = new ExtraButtonComponent(nameCellDiv).setIcon("droplet").setTooltip("Bleeding"); //Bleeding
+      let nameCellDiv = nameCell.createDiv({cls: "condition-buttons"});
+      let button1 = new ExtraButtonComponent(nameCellDiv).setIcon("droplet").setTooltip("Bleeding"); //Bleeding
       button1.onClick( () => this.toggleColors(button1) )
-      var button2 = new ExtraButtonComponent(nameCellDiv).setIcon("sparkles").setTooltip("Dazed"); //Dazed
+      let button2 = new ExtraButtonComponent(nameCellDiv).setIcon("sparkles").setTooltip("Dazed"); //Dazed
       button2.onClick( () => this.toggleColors(button2) )
-      var button3 = new ExtraButtonComponent(nameCellDiv).setIcon("frown").setTooltip("Frightened"); //Frightened
+      let button3 = new ExtraButtonComponent(nameCellDiv).setIcon("frown").setTooltip("Frightened"); //Frightened
       button3.onClick( () => this.toggleColors(button3) )
-      var button4 = new ExtraButtonComponent(nameCellDiv).setIcon("grab").setTooltip("Grabbed"); //Grabbed
+      let button4 = new ExtraButtonComponent(nameCellDiv).setIcon("grab").setTooltip("Grabbed"); //Grabbed
       button4.onClick( () => this.toggleColors(button4) )
-      var button5 = new ExtraButtonComponent(nameCellDiv).setIcon("arrow-down-to-line").setTooltip("Prone"); //Prone
+      let button5 = new ExtraButtonComponent(nameCellDiv).setIcon("arrow-down-to-line").setTooltip("Prone"); //Prone
       button5.onClick( () => this.toggleColors(button5) )
-      var button6 = new ExtraButtonComponent(nameCellDiv).setIcon("link").setTooltip("Restrained"); //Restrained
+      let button6 = new ExtraButtonComponent(nameCellDiv).setIcon("link").setTooltip("Restrained"); //Restrained
       button6.onClick( () => this.toggleColors(button6) )
-      var button7 = new ExtraButtonComponent(nameCellDiv).setIcon("snail").setTooltip("Slowed"); //Slowed
+      let button7 = new ExtraButtonComponent(nameCellDiv).setIcon("snail").setTooltip("Slowed"); //Slowed
       button7.onClick( () => this.toggleColors(button7) )
-      var button8 = new ExtraButtonComponent(nameCellDiv).setIcon("circle-alert").setTooltip("Taunted"); //Taunted
+      let button8 = new ExtraButtonComponent(nameCellDiv).setIcon("circle-alert").setTooltip("Taunted"); //Taunted
       button8.onClick( () => this.toggleColors(button8) )
-      var button9 = new ExtraButtonComponent(nameCellDiv).setIcon("heart-crack").setTooltip("Weakened"); //Weakened
+      let button9 = new ExtraButtonComponent(nameCellDiv).setIcon("heart-crack").setTooltip("Weakened"); //Weakened
       button9.onClick( () => this.toggleColors(button9) )
       row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell"})
       this.updateStamina(row, creature.CurrentStamina.toString(), creature.Type == CreatureTypes.Minion)
-      var buttonCell = row.createEl('td', {cls: Green});
-      var buttonComp = new ButtonComponent(buttonCell);
+      let buttonCell = row.createEl('td', {cls: Green});
+      let buttonComp = new ButtonComponent(buttonCell);
       buttonComp.setButtonText(No);
       buttonComp.setClass(Fill);
       buttonComp.onClick( () => {
         this.changeTriggeredActionCell(row, buttonComp, buttonComp.buttonEl.getText() == No);
       });
-      var actedButtonCell = row.createEl('td', {cls: Green});
-      var actedButtonComp = new ButtonComponent(actedButtonCell);
+      let actedButtonCell = row.createEl('td', {cls: Green});
+      let actedButtonComp = new ButtonComponent(actedButtonCell);
       actedButtonComp.setButtonText(No);
       actedButtonComp.setClass(Fill);
       actedButtonComp.onClick( () => {
         this.changeActedCell(row, actedButtonComp, actedButtonComp.buttonEl.getText() == No);
       });
       buttonCell = row.createEl('td');
-      var removeButton = new ButtonComponent(buttonCell);
+      let removeButton = new ButtonComponent(buttonCell);
       removeButton.buttonEl.addClass("padded");
       removeButton.onClick(() => {this.removeRow(row)});
       buttonCell.createEl('br');
@@ -308,10 +308,10 @@ export class InitiativeView extends ItemView {
 
   updateStamina(row: HTMLTableRowElement, stamina: string, isMinion: boolean){
     try{
-      var staminaCell = row.children[1] as HTMLTableCellElement;
-      var parsedId = staminaCell.parentElement?.id.split(" ");
-      var maxStamina = 0;
-      var minionStamina;
+      let staminaCell = row.children[1] as HTMLTableCellElement;
+      let parsedId = staminaCell.parentElement?.id.split(" ");
+      let maxStamina = 0;
+      let minionStamina;
       if (parsedId != undefined) {
         if (parsedId[0] == "Hero"){
           maxStamina = this.heroes[+parsedId[1]].MaxStamina;
@@ -335,7 +335,7 @@ export class InitiativeView extends ItemView {
     }
     catch(e)
     {
-      var result = (e as Error).message;
+      let result = (e as Error).message;
       console.log("ERROR:");
       console.log(result);
     }
@@ -378,12 +378,11 @@ export class InitiativeView extends ItemView {
   }
 
   resetActed() {
-    var count = this.heroesTableEl.children.length;
-    for (var i = 1; i < count; i++)
+    for (let i = 1; i < this.heroesTableEl.children.length; i++)
       {
-          var row =  (this.heroesTableEl.children[i] as (HTMLTableRowElement));
-          var button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
-          var triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
+          let row =  (this.heroesTableEl.children[i] as (HTMLTableRowElement));
+          let button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
+          let triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
           button.textContent = No;
           triggeredActionButton.textContent = No;
           row.children[3].removeClass(Red);
@@ -391,12 +390,11 @@ export class InitiativeView extends ItemView {
           row.children[3].addClass(Green);
           row.children[2].addClass(Green);
       }
-    var count = this.villainsTableEl.children.length;
-    for (var i = 1; i < count; i++)
+    for (let i = 1; i < this.villainsTableEl.children.length; i++)
       {
-          var row =  (this.villainsTableEl.children[i] as (HTMLTableRowElement));
-          var button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
-          var triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
+          let row =  (this.villainsTableEl.children[i] as (HTMLTableRowElement));
+          let button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
+          let triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
           button.textContent = No;
           triggeredActionButton.textContent = No;
           row.children[3].removeClass(Red);
@@ -407,13 +405,13 @@ export class InitiativeView extends ItemView {
   }
 
   clearHeroesTable(){
-    for(var i = 1; i < this.heroesTableEl.children.length; i++)
+    for(let i = 1; i < this.heroesTableEl.children.length; i++)
     {
       this.heroesTableEl.children[i].remove();
     }
   }
   clearVillainsTable(){
-    for(var i = 1; i < this.villainsTableEl.children.length; i++)
+    for(let i = 1; i < this.villainsTableEl.children.length; i++)
     {
       this.villainsTableEl.children[i].remove();
     }
