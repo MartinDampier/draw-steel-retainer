@@ -5,6 +5,8 @@ export default class Creature{
     Name: string;
     MaxStamina: number;
     CurrentStamina: number;
+    MinionStamina?: number;
+    MinionCount?: number;
     Type?: CreatureTypes;
     HasActed: boolean;
     IsHero: boolean;

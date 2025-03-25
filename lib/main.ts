@@ -3,6 +3,7 @@ import { InitiativeView } from './Views/InitiativeTrackerView';
 import { VIEW_TYPE_EXAMPLE, TableFormat, TableFlag } from 'lib/Models/Constants';
 import Creature from 'lib/Models/Creature';
 import {MyPluginSettings, DEFAULT_SETTINGS} from 'lib/Settings'
+import { CreatureTypes } from './Models/CreatureTypes';
 // Remember to rename these classes and interfaces!
 
 export default class ForbiddenLandsCharacterSheet extends Plugin {
@@ -143,6 +144,7 @@ class SampleSettingTab extends PluginSettingTab {
 			.onClick( () => {
 				this.buildCharacterInput(containerEl)
 			} );
+		console.log(this.plugin.creatures.length);
 	    console.log(this.plugin.settings.playerCharacters.length);
 	    console.log(containerEl.children.length);
 		console.log("Adding Characters");
@@ -152,7 +154,7 @@ class SampleSettingTab extends PluginSettingTab {
 	buildCharacterInput(containerEl: HTMLElement, character?: Creature){
 		console.log("HI!!!!");
 		var player = character ?? new Creature();
-		
+		player.Type = CreatureTypes.Hero;
 		if (character == undefined)
 		{
 			this.plugin.settings.playerCharacters.push(player);

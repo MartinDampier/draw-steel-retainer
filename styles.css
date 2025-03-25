@@ -18,6 +18,10 @@
     width: 100%;
 }
 
+.tableCell {
+    display: table-cell;
+}
+
 .roundHeader {
     width: 50%;
     display: table-cell;
@@ -52,7 +56,8 @@
 }
 
 .padded-input {
-    margin: 5px;
+    margin-left: 5px;
+    margin-bottom: 5px;
 }
 
 .rightAlign {
@@ -119,8 +124,18 @@ th, td {
 .name-Cell {
     width: 400px;
 }
+
+.verticalType {
+    transform: translate(-8%) rotate(-90deg) translate(-14px) ;
+    margin: -18px;
+    width: 57px;
+    font-weight: bold;
+}
+
 .slimButton{
     margin: 1px;
     padding: 10px, 0px, 0px, 0px;
+    width: 18px;
+    height: 18px;
     background-color: transparent;
 }
