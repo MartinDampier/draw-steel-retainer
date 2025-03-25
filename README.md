@@ -1,4 +1,4 @@
-# Draw Steel Companion 
+# Draw Steel Retainer 
 
 This plugin is designed to be used in conjunction with the TTRPG Draw Steel by MCDM. The plugin allows users to manage and track combat encounters in a initiative tracker. 
 

@@ -218,10 +218,12 @@ export class InitiativeView extends ItemView {
         if (creature.Type == CreatureTypes.Minion)
         {
           creature.MinionStamina = +(this.minionStaminaInput.getValue());
+          this.minionStaminaInput.setValue("")
           creature.MinionCount = +(this.minionCountInput.getValue());
+          this.minionCountInput.setValue("1");
           creature.MaxStamina = creature.MinionStamina * creature.MinionCount;
         } else {
-          creature.MaxStamina = this.staminaInput != undefined ? +this.staminaInput.getValue() : 0;
+          creature.MaxStamina = this.staminaInput.getValue != undefined ? +this.staminaInput.getValue() : 0;
         }
         creature.IsHero = isHero;
         this.staminaInput.setValue('');
