@@ -108,7 +108,6 @@ export class InitiativeView extends ItemView {
     var heroButtonComp = new ButtonComponent(this.formEl);
     heroButtonComp.setButtonText("Hero");
     heroButtonComp.setClass("padded-input");
-    console.log(heroButtonComp.buttonEl.classList);
     heroButtonComp.onClick( () => this.createCreatureRow(undefined, true));
     var villainButtonComp = new ButtonComponent(this.formEl);
     villainButtonComp.setButtonText("Villain");
@@ -119,7 +118,7 @@ export class InitiativeView extends ItemView {
  
   createRoundSection(){
     this.roundEl= this.gridEl.createDiv( {cls: "tableStyle "});
-    this.setRound(0);
+    this.setRound(1);
     this.setMalice(0);
   }
 
@@ -310,7 +309,6 @@ export class InitiativeView extends ItemView {
   updateStamina(row: HTMLTableRowElement, stamina: string, isMinion: boolean){
     try{
       var staminaCell = row.children[1] as HTMLTableCellElement;
-      console.log("updateStamina parent Id: " + staminaCell.parentElement?.id);
       var parsedId = staminaCell.parentElement?.id.split(" ");
       var maxStamina = 0;
       var minionStamina;
@@ -324,7 +322,6 @@ export class InitiativeView extends ItemView {
         }
       }
       staminaCell.empty();
-      console.log(stamina);
       let staminaDiv = staminaCell.createDiv({ cls: "tableStyle"})
       staminaDiv.createDiv({ text: "Max: " + maxStamina, cls: "tableCell"})
       if (isMinion)

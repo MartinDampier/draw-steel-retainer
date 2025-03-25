@@ -38,13 +38,13 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 				editor.replaceRange(TableFormat, editor.getCursor());
 			}
 		});
-		this.addCommand({
-			id: 'import-table-to-tracker',
-			name: 'Import Table To Tracker',
-			editorCallback: (editor: Editor) => {
-				this.importSelectionToTracker(editor);
-			}
-		});
+		// this.addCommand({
+		// 	id: 'import-table-to-tracker',
+		// 	name: 'Import Table To Tracker',
+		// 	editorCallback: (editor: Editor) => {
+		// 		this.importSelectionToTracker(editor);
+		// 	}
+		// });
 	}
 
 	importSelectionToTracker(editor: Editor){
@@ -144,15 +144,10 @@ class SampleSettingTab extends PluginSettingTab {
 			.onClick( () => {
 				this.buildCharacterInput(containerEl)
 			} );
-		console.log(this.plugin.creatures.length);
-	    console.log(this.plugin.settings.playerCharacters.length);
-	    console.log(containerEl.children.length);
-		console.log("Adding Characters");
 		this.plugin.settings.playerCharacters.forEach((x) => this.buildCharacterInput(containerEl, x))
 	}
 
 	buildCharacterInput(containerEl: HTMLElement, character?: Creature){
-		console.log("HI!!!!");
 		var player = character ?? new Creature();
 		player.Type = CreatureTypes.Hero;
 		if (character == undefined)
@@ -168,7 +163,6 @@ class SampleSettingTab extends PluginSettingTab {
 			.setPlaceholder('Name')
 			.setValue(player.Name)
 			.onChange(async (value) => {
-				console.log('Secret: ' + value);
 				player.Name = value;
 				await this.plugin.saveSettings();
 			}))
@@ -176,7 +170,6 @@ class SampleSettingTab extends PluginSettingTab {
 			.setPlaceholder('Stamina')
 			.setValue(staminaInput)
 			.onChange(async (value) => {
-				console.log('Secret: ' + value);
 				if (value != null && value != "")
 				{
 					player.MaxStamina = +value;
