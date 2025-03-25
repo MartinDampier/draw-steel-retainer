@@ -1,11 +1,11 @@
-import { maxHeaderSize } from "http";
+import { CreatureTypes } from "lib/Models/CreatureTypes";
 
 export default class Creature{
     Id: string;
     Name: string;
     MaxStamina: number;
     CurrentStamina: number;
-    //Conditions: lis
+    Type?: CreatureTypes;
     HasActed: boolean;
     IsHero: boolean;
 

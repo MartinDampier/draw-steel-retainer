@@ -1,8 +1,9 @@
 import { createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
 import { VIEW_TYPE_EXAMPLE, Red, Green, Yes, No, Fill } from 'lib/Models/Constants';
-import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent } from 'obsidian';
+import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent, DropdownComponent } from 'obsidian';
 import { isSharedArrayBuffer } from 'util/types';
+import { CreatureTypes } from 'lib/Models/CreatureTypes';
 
 export class InitiativeView extends ItemView {
   gridEl: HTMLDivElement;
@@ -12,6 +13,8 @@ export class InitiativeView extends ItemView {
   villainsTableEl: HTMLDivElement;
   nameInput: TextComponent;
   staminaInput: TextComponent;
+  minionStaminaInput: TextComponent;
+  typeInput: DropdownComponent;
   villains: Creature[] = [];
   heroes: Creature[] = [];
   creatures: Creature[] = [];
@@ -58,13 +61,34 @@ export class InitiativeView extends ItemView {
 
   createInputSection() {
     this.formEl = this.gridEl.createDiv({cls: "fullScreen"});
+
     this.nameInput = new TextComponent(this.formEl).setPlaceholder("Name");
     this.nameInput.inputEl.addClass("padded-input");
+
     this.staminaInput = new TextComponent(this.formEl).setPlaceholder("Max Stamina");
     this.staminaInput.inputEl.addClass("padded-input");
-   
+
+    this.minionStaminaInput = new TextComponent(this.formEl).setPlaceholder("Minion Stamina");
+    this.minionStaminaInput.inputEl.hidden = true;
+
+    this.typeInput = new DropdownComponent(this.formEl)
+      .addOption(CreatureTypes.Hero.toString(), CreatureTypes.Hero.toString())
+      .addOption(CreatureTypes.Minion.toString(), CreatureTypes.Minion.toString())
+      .addOption(CreatureTypes.Platoon.toString(), CreatureTypes.Platoon.toString())
+      .addOption(CreatureTypes.Troop.toString(), CreatureTypes.Troop.toString())
+      .addOption(CreatureTypes.Leader.toString(), CreatureTypes.Leader.toString())
+      .addOption(CreatureTypes.Solo.toString(), CreatureTypes.Solo.toString())
+      .onChange((value: string) => {
+        if (value == CreatureTypes.Minion.toString()) {
+          this.minionStaminaInput.inputEl.hidden = false;
+        }
+        else {
+          this.minionStaminaInput.inputEl.hidden = true;
+        }
+      });
     var heroButtonComp = new ButtonComponent(this.formEl);
     heroButtonComp.setButtonText("Hero");
+    heroButtonComp.setClass("villainsButton");
     heroButtonComp.onClick( () => this.createCreatureRow(undefined, true));
     var villainButtonComp = new ButtonComponent(this.formEl);
     villainButtonComp.setButtonText("Villain");
