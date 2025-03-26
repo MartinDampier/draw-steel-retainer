@@ -10,6 +10,8 @@ In order to use the initiative tracker, you must simple press the scroll ribbon.
 ## Settings
 In the settings of the plugin there is an option to add player characters. When a player character is added they will be automatically added to any initiative tracker upon generation.
 
+<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support me on Ko-fi', '#af8bd9', 'V7V51C5H0T');kofiwidget2.draw();</script> 
+
 ## Features to come
 - Negotiation Tracker
 - Montage Test Tracker
