@@ -5,7 +5,7 @@ This plugin is designed to be used in conjunction with the TTRPG Draw Steel by M
 ## Initiative Tracker
 In order to use the initiative tracker, you must simple press the scroll ribbon. This will open a view with the tracker inside of it. The tracker allows for a DM to have two tables for tracking Draw Steel style initiative. 
 
-![An example of the initiative tracker featuring the iconic heroes and Ajax the Invincible]([image.png](https://github.com/MartinDampier/draw-steel-retainer/blob/master/initiativeTrackerExample.png))
+![An example of the initiative tracker featuring the iconic heroes and Ajax the Invincible](https://github.com/MartinDampier/draw-steel-retainer/blob/master/initiativeTrackerExample.png)
 <a>
 
 
