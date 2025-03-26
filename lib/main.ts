@@ -2,12 +2,12 @@ import { App, ButtonComponent, Editor, MarkdownView, Modal, Notice, Plugin, Plug
 import { InitiativeView } from './Views/InitiativeTrackerView';
 import { INITIATIVE_VIEW, TableFormat, TableFlag } from 'lib/Models/Constants';
 import Creature from 'lib/Models/Creature';
-import {MyPluginSettings, DEFAULT_SETTINGS} from 'lib/Settings'
+import {RetainerSettings, DEFAULT_SETTINGS} from 'lib/Settings'
 import { CreatureTypes } from './Models/CreatureTypes';
 // Remember to rename these classes and interfaces!
 
 export default class ForbiddenLandsCharacterSheet extends Plugin {
-	settings: MyPluginSettings;
+	settings: RetainerSettings;
 	creatures: Creature[] = [];
 
 	async onload() {

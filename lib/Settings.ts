@@ -1,11 +1,11 @@
 import Creature from "./Models/Creature";
 
-export interface MyPluginSettings {
+export interface RetainerSettings {
     mySetting: string;
     playerCharacters: Creature[];
 }
 
-export const DEFAULT_SETTINGS: MyPluginSettings = {
+export const DEFAULT_SETTINGS: RetainerSettings = {
     mySetting: 'default',
     playerCharacters: [],
 }

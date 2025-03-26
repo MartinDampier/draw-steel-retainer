@@ -146,7 +146,7 @@ export class InitiativeView extends ItemView {
     this.round = round;
     div = div ?? this.roundEl.createDiv({ cls: "leftAlign roundHeader"});
     div.setText("Round: " + this.round);
-    var newRoundButton = new ButtonComponent(div);
+    let newRoundButton = new ButtonComponent(div);
     newRoundButton.setButtonText("New");
     newRoundButton.setClass("headerButtonLeft");
     newRoundButton.onClick( () => {
