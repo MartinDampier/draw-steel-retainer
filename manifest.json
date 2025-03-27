@@ -1,7 +1,7 @@
 {
 	"id": "draw-steel-retainer",
 	"name": "Draw Steel Retainer",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"minAppVersion": "0.15.0",
 	"description": "This plugin creates a initiative tracker that can be used for the MCDM rpg Draw Steel.",
 	"author": "Herotek",
