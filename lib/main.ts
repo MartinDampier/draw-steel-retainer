@@ -135,8 +135,6 @@ class RetainerSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h1', {text: 'Draw Steel Companion Settings'});
-
 		let div = containerEl.createDiv({cls: "rightAlign bottomSpace"});
 		new ButtonComponent(div)
 			.setButtonText("Add Player Character")
