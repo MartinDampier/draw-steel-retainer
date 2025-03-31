@@ -328,10 +328,10 @@ export class InitiativeView extends ItemView {
         staminaDiv.createDiv({ text: "[" + minionStamina + "]", cls: "tableCell", title: "Per Minion"})
       staminaDiv.createDiv({ text: "Current: " + stamina, cls: "tableCell"})
       staminaCell.createEl('br');
-      new ButtonComponent(staminaCell).setButtonText("-5").onClick(() => {this.updateStamina(row, (+stamina - 5).toString(), isMinion)}).setClass('slimButton');
-      new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)}).setClass('slimButton');
-      new ButtonComponent(staminaCell).setButtonText("+1").onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)}).setClass('slimButton');
       new ButtonComponent(staminaCell).setButtonText("+5").onClick(() => {this.updateStamina(row, (+stamina + 5).toString(), isMinion)}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("+1").onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("-5").onClick(() => {this.updateStamina(row, (+stamina - 5).toString(), isMinion)}).setClass('slimButton');
     }
     catch(e)
     {
