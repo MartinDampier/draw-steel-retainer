@@ -89,6 +89,7 @@ export class InitiativeView extends ItemView {
       .addOption(CreatureTypes.Hero.toString(), CreatureTypes.Hero.toString())
       .addOption(CreatureTypes.Minion.toString(), CreatureTypes.Minion.toString())
       .addOption(CreatureTypes.Platoon.toString(), CreatureTypes.Platoon.toString())
+      .addOption(CreatureTypes.Band.toString(), CreatureTypes.Band.toString())
       .addOption(CreatureTypes.Troop.toString(), CreatureTypes.Troop.toString())
       .addOption(CreatureTypes.Leader.toString(), CreatureTypes.Leader.toString())
       .addOption(CreatureTypes.Solo.toString(), CreatureTypes.Solo.toString())
@@ -157,8 +158,8 @@ export class InitiativeView extends ItemView {
     resetRoundsButton.setButtonText("Reset");
     resetRoundsButton.setClass("headerButtonLeft");
     resetRoundsButton.onClick( () => {
-      this.round == 0;
-      this.setRound(0, div);
+      this.round == 1;
+      this.setRound(1, div);
       this.resetActed();
     });
   }
@@ -328,10 +329,10 @@ export class InitiativeView extends ItemView {
         staminaDiv.createDiv({ text: "[" + minionStamina + "]", cls: "tableCell", title: "Per Minion"})
       staminaDiv.createDiv({ text: "Current: " + stamina, cls: "tableCell"})
       staminaCell.createEl('br');
-      new ButtonComponent(staminaCell).setButtonText("-5").onClick(() => {this.updateStamina(row, (+stamina - 5).toString(), isMinion)}).setClass('slimButton');
-      new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)}).setClass('slimButton');
-      new ButtonComponent(staminaCell).setButtonText("+1").onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)}).setClass('slimButton');
       new ButtonComponent(staminaCell).setButtonText("+5").onClick(() => {this.updateStamina(row, (+stamina + 5).toString(), isMinion)}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("+1").onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("-5").onClick(() => {this.updateStamina(row, (+stamina - 5).toString(), isMinion)}).setClass('slimButton');
     }
     catch(e)
     {
