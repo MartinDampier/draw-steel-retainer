@@ -100,23 +100,21 @@
 }
 
 .heroes {
-    border-color: var(--color-green);
-    border-width: 2px;
+    border: 2px solid var(--color-green);
 }
 
 .villains {
-    border-color: var(--color-red);
-    border-width: 2px;
+    border: 2px solid var(--color-red);
 }
-table{
-    border: 1px solid black;
+
+.trackerTableStyle{
     border-collapse: collapse;
     padding: 5px;
     width: 100%;
 }
 
-th, td {
-    border: 1px solid black;
+.trackerTableCellStyle {
+    border: 1px solid;
     border-collapse: collapse;
     padding: 5px;
 }

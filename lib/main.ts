@@ -21,31 +21,8 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 			this.activateView();
 		  });
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
-		
-		// this.addCommands();
-		// This adds a settings tab so the user can configure letious aspects of the plugin
 		this.addSettingTab(new RetainerSettingTab(this.app, this));
 	}
-
-	// addCommands(){
-	// 	this.addCommand({
-	// 		id: "insert-initiative-table",
-	// 		name: "Insert Initiative Table",
-	// 		editorCallback: (editor: Editor) => { 
-	// 			editor.replaceRange(TableFormat, editor.getCursor());
-	// 		}
-	// 	});
-	// 	// this.addCommand({
-	// 	// 	id: 'import-table-to-tracker',
-	// 	// 	name: 'Import Table To Tracker',
-	// 	// 	editorCallback: (editor: Editor) => {
-	// 	// 		this.importSelectionToTracker(editor);
-	// 	// 	}
-	// 	// });
-	// }
 
 	importSelectionToTracker(editor: Editor){
 		if(!(editor.somethingSelected())) {
@@ -94,31 +71,25 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		const leaves = workspace.getLeavesOfType(INITIATIVE_VIEW);
 	
 		if (leaves.length > 0) {
-		  // A leaf with our view already exists, use that
 		  leaf = leaves[0];
 
 		} else {
-		  // Our view could not be found in the workspace, create a new leaf
-		  // in the right sidebar for it
 		  
 		  leaf = workspace.getRightLeaf(false);
 		  if (leaf != null)
 			await leaf.setViewState({ type: INITIATIVE_VIEW, active: true });
 		}
 	
-		// "Reveal" the leaf in case it is in a collapsed sidebar
 		if (leaf != null)
 		workspace.revealLeaf(leaf);
 	  }
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-		console.log("Settings Loaded");
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-		console.log("Settings Saved");
 	}
 }
 
@@ -137,7 +108,7 @@ class RetainerSettingTab extends PluginSettingTab {
 
 		let div = containerEl.createDiv({cls: "rightAlign bottomSpace"});
 		new ButtonComponent(div)
-			.setButtonText("Add Player Character")
+			.setButtonText("Add player character")
 			.setClass("rightAlign")
 			.onClick( () => {
 				this.buildCharacterInput(containerEl)
@@ -155,8 +126,8 @@ class RetainerSettingTab extends PluginSettingTab {
 
 		let staminaInput = player.MaxStamina == undefined ? '' : player.MaxStamina.toString();
 		let setting = new Setting(containerEl)
-		.setName('Player Character')
-		.setDesc('Set the PC\'s Name and Stamina')
+		.setName('Player character')
+		.setDesc('Set the PC\'s name and stamina')
 		.addText(text => text
 			.setPlaceholder('Name')
 			.setValue(player.Name)

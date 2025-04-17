@@ -164,7 +164,7 @@ export class InitiativeView extends ItemView {
   }
   //Create a HTML Table
   createTable(isHero: boolean) {
-    let classes = "Centered" + (isHero ? " heroes" : " villains")
+    let classes = "Centered" + (isHero ? " heroes" : " villains") + ' trackerTableStyle'; 
     if (isHero)
     {
       this.heroesTableEl = this.gridEl.createEl('table', {cls: classes});
@@ -174,12 +174,12 @@ export class InitiativeView extends ItemView {
       this.villainsTableEl = this.gridEl.createEl('table', {cls: classes});
     }
     let header = isHero ? this.heroesTableEl.createEl('tr') : this.villainsTableEl.createEl('tr');
-    header.createEl('th', {text: 'Character', cls: 'name-Cell'});
-    header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell'});
-    header.createEl('th', {text: 'TA', title: "Triggered Action"});
-    header.createEl('th', {text: 'Acted'});
+    header.createEl('th', {text: 'Character', cls: 'name-Cell trackerTableCellStyle'});
+    header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell trackerTableCellStyle'});
+    header.createEl('th', {text: 'TA', title: "Triggered Action", cls: 'trackerTableCellStyle'});
+    header.createEl('th', {text: 'Acted', cls: 'trackerTableCellStyle'});
     
-    let createButtonHeader = header.createEl('th');
+    let createButtonHeader = header.createEl('th', { cls: 'trackerTableCellStyle'});
     let resetButtonComp = new ButtonComponent(createButtonHeader)
     resetButtonComp.setButtonText("Clear");
     resetButtonComp.setClass("headerButtonRight");
@@ -239,7 +239,7 @@ export class InitiativeView extends ItemView {
         this.villains.push(creature);
       let row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered"}) : this.villainsTableEl.createEl('tr', {cls: "Centered"});
       row.id = isHero ? "Hero " + this.heroes.indexOf(creature) : "Villain " + this.villains.indexOf(creature);
-      let nameCell = row.createEl('td', {text: creature.Name, cls: "Centered name-Cell"});
+      let nameCell = row.createEl('td', {text: creature.Name, cls: "Centered name-Cell trackerTableCellStyle"});
       nameCell.createDiv({text: creature.Type?.toString(), cls: "verticalType topAlign"})
       nameCell.createEl("br");
       let nameCellDiv = nameCell.createDiv({cls: "condition-buttons"});
@@ -261,23 +261,23 @@ export class InitiativeView extends ItemView {
       button8.onClick( () => this.toggleColors(button8) )
       let button9 = new ExtraButtonComponent(nameCellDiv).setIcon("heart-crack").setTooltip("Weakened"); //Weakened
       button9.onClick( () => this.toggleColors(button9) )
-      row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell"})
+      row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell trackerTableCellStyle"})
       this.updateStamina(row, creature.CurrentStamina.toString(), creature.Type == CreatureTypes.Minion)
-      let buttonCell = row.createEl('td', {cls: Green});
+      let buttonCell = row.createEl('td', {cls: Green + " trackerTableCellStyle"});
       let buttonComp = new ButtonComponent(buttonCell);
       buttonComp.setButtonText(No);
       buttonComp.setClass(Fill);
       buttonComp.onClick( () => {
         this.changeTriggeredActionCell(row, buttonComp, buttonComp.buttonEl.getText() == No);
       });
-      let actedButtonCell = row.createEl('td', {cls: Green});
+      let actedButtonCell = row.createEl('td', {cls: Green + " trackerTableCellStyle"});
       let actedButtonComp = new ButtonComponent(actedButtonCell);
       actedButtonComp.setButtonText(No);
       actedButtonComp.setClass(Fill);
       actedButtonComp.onClick( () => {
         this.changeActedCell(row, actedButtonComp, actedButtonComp.buttonEl.getText() == No);
       });
-      buttonCell = row.createEl('td');
+      buttonCell = row.createEl('td', {cls: 'trackerTableCellStyle'});
       let removeButton = new ButtonComponent(buttonCell);
       removeButton.buttonEl.addClass("padded");
       removeButton.onClick(() => {this.removeRow(row)});
