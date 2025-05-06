@@ -39,7 +39,7 @@ export class InitiativeView extends ItemView {
   }
 
   getDisplayText() {
-    return 'Initiative Tracker';
+    return 'Initiative tracker';
   }
 
   getIcon() {
@@ -65,10 +65,10 @@ export class InitiativeView extends ItemView {
     this.nameInput = new TextComponent(this.formEl).setPlaceholder("Name");
     this.nameInput.inputEl.addClass("padded-input");
 
-    this.staminaInput = new TextComponent(this.formEl).setPlaceholder("Max Stamina");
+    this.staminaInput = new TextComponent(this.formEl).setPlaceholder("Max stamina");
     this.staminaInput.inputEl.addClass("padded-input");
     
-    this.minionStaminaInput = new TextComponent(this.formEl).setPlaceholder("Minion Stamina");
+    this.minionStaminaInput = new TextComponent(this.formEl).setPlaceholder("Minion stamina");
     this.minionStaminaInput.inputEl.addClass("padded-input");
     this.minionStaminaInput.inputEl.hidden = true;
 
@@ -81,7 +81,7 @@ export class InitiativeView extends ItemView {
       .addOption("6", "6")
       .addOption("7", "7")
       .addOption("8", "8");
-    this.minionCountInput.selectEl.title = "Minion Count";
+    this.minionCountInput.selectEl.title = "Minion count";
     this.minionCountInput.selectEl.addClass("padded-input");
     this.minionCountInput.selectEl.hidden = true;
 
