@@ -3,7 +3,7 @@ import { InitiativeView } from './Views/InitiativeTrackerView';
 import { NegotiationView } from './Views/NegotiationView';
 import { INITIATIVE_VIEW, TableFormat, TableFlag, NEGOTIATION_VIEW } from 'lib/Models/Constants';
 import Creature from 'lib/Models/Creature';
-import {RetainerSettings, DEFAULT_SETTINGS, RetainerSettingTab} from 'lib/Settings'
+import {RetainerSettings, DEFAULT_SETTINGS} from 'lib/Settings'
 import { CreatureTypes } from './Models/CreatureTypes';
 // Remember to rename these classes and interfaces!
 
@@ -69,8 +69,8 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 	}
 
 	onunload() {
-	}
 
+	}
 	async activateNegotiationView() {
 		const { workspace } = this.app;
 	
@@ -78,9 +78,12 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		const leaves = workspace.getLeavesOfType(NEGOTIATION_VIEW);
 	
 		if (leaves.length > 0) {
+		  // A leaf with our view already exists, use that
 		  leaf = leaves[0];
 
 		} else {
+		  // Our view could not be found in the workspace, create a new leaf
+		  // in the right sidebar for it
 		  
 		  leaf = workspace.getRightLeaf(false);
 		  if (leaf != null)
