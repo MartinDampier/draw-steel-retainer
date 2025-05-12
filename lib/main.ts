@@ -29,13 +29,6 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 			this.activateNegotiationView();
 		});
 
-
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status Bar Text');
-		
-		// this.addCommands();
-		// This adds a settings tab so the user can configure letious aspects of the plugin
 		this.addSettingTab(new RetainerSettingTab(this.app, this));
 	}
 
@@ -85,12 +78,9 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		const leaves = workspace.getLeavesOfType(NEGOTIATION_VIEW);
 	
 		if (leaves.length > 0) {
-		  // A leaf with our view already exists, use that
 		  leaf = leaves[0];
 
 		} else {
-		  // Our view could not be found in the workspace, create a new leaf
-		  // in the right sidebar for it
 		  
 		  leaf = workspace.getRightLeaf(false);
 		  if (leaf != null)
@@ -109,30 +99,92 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		const leaves = workspace.getLeavesOfType(INITIATIVE_VIEW);
 	
 		if (leaves.length > 0) {
-		  // A leaf with our view already exists, use that
 		  leaf = leaves[0];
 
 		} else {
-		  // Our view could not be found in the workspace, create a new leaf
-		  // in the right sidebar for it
 		  
 		  leaf = workspace.getRightLeaf(false);
 		  if (leaf != null)
 			await leaf.setViewState({ type: INITIATIVE_VIEW, active: true });
 		}
 	
-		// "Reveal" the leaf in case it is in a collapsed sidebar
 		if (leaf != null)
 		workspace.revealLeaf(leaf);
 	}
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-		console.log("Settings Loaded");
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-		console.log("Settings Saved");
+	}
+}
+
+class RetainerSettingTab extends PluginSettingTab {
+	plugin: ForbiddenLandsCharacterSheet;
+
+	constructor(app: App, plugin: ForbiddenLandsCharacterSheet) {
+		super(app, plugin);
+		this.plugin = plugin;
+	}
+
+	display(): void {
+		const {containerEl} = this;
+
+		containerEl.empty();
+
+		let div = containerEl.createDiv({cls: "rightAlign bottomSpace"});
+		new ButtonComponent(div)
+			.setButtonText("Add player character")
+			.setClass("rightAlign")
+			.onClick( () => {
+				this.buildCharacterInput(containerEl)
+			} );
+		this.plugin.settings.playerCharacters.forEach((x) => this.buildCharacterInput(containerEl, x))
+	}
+
+	buildCharacterInput(containerEl: HTMLElement, character?: Creature){
+		let player = character ?? new Creature();
+		player.Type = CreatureTypes.Hero;
+		if (character == undefined)
+		{
+			this.plugin.settings.playerCharacters.push(player);
+		}
+
+		let staminaInput = player.MaxStamina == undefined ? '' : player.MaxStamina.toString();
+		let setting = new Setting(containerEl)
+		.setName('Player character')
+		.setDesc('Set the PC\'s name and stamina')
+		.addText(text => text
+			.setPlaceholder('Name')
+			.setValue(player.Name)
+			.onChange(async (value) => {
+				player.Name = value;
+				await this.plugin.saveSettings();
+			}))
+		.addText(text => text
+			.setPlaceholder('Stamina')
+			.setValue(staminaInput)
+			.onChange(async (value) => {
+				if (value != null && value != "")
+				{
+					player.MaxStamina = +value;
+				}
+				await this.plugin.saveSettings();
+			}))
+		.addButton((button: ButtonComponent): ButtonComponent => {
+			let b = button.setButtonText("Delete").onClick(async () => {
+				this.plugin.settings.playerCharacters.remove(player);
+				setting.controlEl.remove();
+				setting.nameEl.remove();
+				setting.descEl.remove();
+				setting.infoEl.remove();
+				setting.settingEl.remove();
+				await this.plugin.saveSettings();
+			});
+			return b;
+		});
+					
 	}
 }
