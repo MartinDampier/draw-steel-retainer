@@ -1,6 +1,6 @@
 import { createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
-import { INITIATIVE_VIEW, Red, Green, Yes, No, Fill } from 'lib/Models/Constants';
+import { INITIATIVE_VIEW, Red, Green, Yes, No, PaddedFill } from 'lib/Models/Constants';
 import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent, DropdownComponent } from 'obsidian';
 import { isSharedArrayBuffer } from 'util/types';
 import { CreatureTypes } from 'lib/Models/CreatureTypes';
@@ -267,14 +267,14 @@ export class InitiativeView extends ItemView {
       let buttonCell = row.createEl('td', {cls: Green + " trackerTableCellStyle"});
       let buttonComp = new ButtonComponent(buttonCell);
       buttonComp.setButtonText(No);
-      buttonComp.setClass(Fill);
+      buttonComp.setClass(PaddedFill);
       buttonComp.onClick( () => {
         this.changeTriggeredActionCell(row, buttonComp, buttonComp.buttonEl.getText() == No);
       });
       let actedButtonCell = row.createEl('td', {cls: Green + " trackerTableCellStyle"});
       let actedButtonComp = new ButtonComponent(actedButtonCell);
       actedButtonComp.setButtonText(No);
-      actedButtonComp.setClass(Fill);
+      actedButtonComp.setClass(PaddedFill);
       actedButtonComp.onClick( () => {
         this.changeActedCell(row, actedButtonComp, actedButtonComp.buttonEl.getText() == No);
       });
