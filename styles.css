@@ -114,6 +114,12 @@
 .wizard{
     margin-right: auto;
     margin-left: auto;
+    height: auto;
+    border-radius: 10px;
+    padding: 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--color-accent);
 }
 .wizardButton {
     top: 3px;

@@ -18,7 +18,7 @@ export class NegotiationView extends ItemView {
       }
     
     getDisplayText() {
-        return 'Negotiation Tracker';
+        return 'Negotiation tracker';
     }
     getIcon() {
         return "messages-square";
@@ -28,65 +28,71 @@ export class NegotiationView extends ItemView {
     }
     
     private buildWizard() {
+
+        function addLabel(element: HTMLElement, label: string){
+            element.createEl('br');
+            element.createEl('label', {text: label})
+            element.createEl('br');
+        }
+
+        function addOption(element: HTMLElement, placeholder: string)
+        {
+            let x = new TextAreaComponent(element).setPlaceholder(placeholder);
+             x.inputEl.addClass('padded-input');
+             x.inputEl.addClass('offerStyle');
+        }
+
         this.contentEl.empty();
         this.wizardEl = this.contentEl.createDiv();
         this.wizardEl.addClass('wizard');
         this.wizardEl.addClass('paddedFill');
-        this.wizardEl.createEl('label', {text: 'Character Name', cls: 'leftAlign'});
+        this.wizardEl.createEl('label', {text: 'Character name', cls: 'leftAlign'});
         this.wizardEl.createEl('br');
         new TextComponent(this.wizardEl).setPlaceholder('John Smith').inputEl.addClass('fill');
-        this.wizardEl.createEl('br');
-        this.wizardEl.createEl('br');
-        this.wizardEl.createEl('label', {text: 'Languages'})
-        this.wizardEl.createEl('br');
-        let languageDropdown =  new DropdownComponent(this.wizardEl);
+
+        let languageDiv = this.wizardEl.createDiv();
+        addLabel(languageDiv, 'Languages');
+        let languageDropdown =  new DropdownComponent(languageDiv);
         languageDropdown.selectEl.addClass('wizardSelect');
         for (let i = 0; i < this.settings.languages.length; i++) {
             let language = this.settings.languages[i].Name;
             languageDropdown.addOption(language, language);
         }
-        new ButtonComponent(this.wizardEl).setIcon('plus').buttonEl.addClass('wizardButton');
-        this.wizardEl.createEl('br');
-        this.wizardEl.createEl('br');
-        this.wizardEl.createEl('label', {text: 'Motivations'})
-        this.wizardEl.createEl('br');
-        let motivationOneDropdown = new DropdownComponent(this.wizardEl);
-        new ButtonComponent(this.wizardEl).setIcon('plus').buttonEl.addClass('wizardButton');
+        new ButtonComponent(languageDiv).setIcon('plus').buttonEl.addClass('wizardButton');
+
+        let motivationDiv = this.wizardEl.createDiv();
+        addLabel(motivationDiv, 'Motivations');
+        let motivationOneDropdown = new DropdownComponent(motivationDiv);
+        let motivationTwoDropdown = new DropdownComponent(motivationDiv);
         motivationOneDropdown.selectEl.addClass('wizardSelect');
+        motivationTwoDropdown.selectEl.addClass('wizardSelect');
         for (let i = 0; i < this.settings.motivationPitfall.length; i++) {
             let motivation = this.settings.motivationPitfall[i].Name;
             motivationOneDropdown.addOption(motivation, motivation);
+            motivationTwoDropdown.addOption(motivation, motivation);
         }
-        this.wizardEl.createEl('br');
-        this.wizardEl.createEl('br');
-        this.wizardEl.createEl('label', {text: 'Pitfalls'})
-        this.wizardEl.createEl('br');
-        let pitfallOneDropdown = new DropdownComponent(this.wizardEl);
-        new ButtonComponent(this.wizardEl).setIcon('plus').buttonEl.addClass('wizardButton');
+
+        let pitfallDiv = this.wizardEl.createDiv();
+        addLabel(pitfallDiv, 'Pitfalls');
+        let pitfallOneDropdown = new DropdownComponent(pitfallDiv);
+        let pitfallTwoDropdown = new DropdownComponent(pitfallDiv);
         pitfallOneDropdown.selectEl.addClass('wizardSelect');
+        pitfallTwoDropdown.selectEl.addClass('wizardSelect');
         for (let i = 0; i < this.settings.motivationPitfall.length; i++) {
             let pitfall = this.settings.motivationPitfall[i].Name;
             pitfallOneDropdown.addOption(pitfall, pitfall);
+            pitfallTwoDropdown.addOption(pitfall, pitfall);
         }
-        this.wizardEl.createEl('br');
-        this.wizardEl.createEl('br');
-        this.wizardEl.createEl('label', {text: 'Offers'})
-        this.wizardEl.createEl('br');
-        let x = new TextAreaComponent(this.wizardEl).setPlaceholder('No and Die!');
-        x.inputEl.addClass('padded-input');
-        x.inputEl.addClass('offerStyle');
-        x = new TextAreaComponent(this.wizardEl).setPlaceholder('No');
-        x.inputEl.addClass('padded-input');
-        x.inputEl.addClass('offerStyle');
-        x = new TextAreaComponent(this.wizardEl).setPlaceholder('Yes, but no');
-        x.inputEl.addClass('padded-input');
-        x.inputEl.addClass('offerStyle');
-        x = new TextAreaComponent(this.wizardEl).setPlaceholder('Yes');
-        x.inputEl.addClass('padded-input');
-        x.inputEl.addClass('offerStyle');
-        x = new TextAreaComponent(this.wizardEl).setPlaceholder('Yes and have my first born son');
-        x.inputEl.addClass('padded-input');
-        x.inputEl.addClass('offerStyle');
+        
+        addLabel(this.wizardEl, 'Offers');
+        addOption(this.wizardEl, 'No and Die!');
+        addOption(this.wizardEl, 'No');
+        addOption(this.wizardEl, 'Yes but no');
+        addOption(this.wizardEl, 'Yes');
+        addOption(this.wizardEl, 'Yes and !');
+        let submitButton = new ButtonComponent(this.wizardEl);
+        submitButton.setButtonText('Submit');
+        submitButton.setClass('rightAlign');
     }
 
     private buildTracker() {
