@@ -1,9 +1,10 @@
 import { createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
 import { INITIATIVE_VIEW, Red, Green, Yes, No, Fill } from 'lib/Models/Constants';
-import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent, DropdownComponent } from 'obsidian';
+import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent, DropdownComponent, Modal, App } from 'obsidian';
 import { isSharedArrayBuffer } from 'util/types';
 import { CreatureTypes } from 'lib/Models/CreatureTypes';
+import { group } from 'console';
 
 export class InitiativeView extends ItemView {
   gridEl: HTMLDivElement;
@@ -21,9 +22,11 @@ export class InitiativeView extends ItemView {
   buttons: ButtonComponent[] = [];
   round: number = 1;
   malice: number;
+  app: App;
 
-  constructor(leaf: WorkspaceLeaf, villains?: Creature[], heroes?: Creature[]) {
+  constructor(leaf: WorkspaceLeaf, app: App, villains?: Creature[], heroes?: Creature[]) {
     super(leaf);
+    this.app = app;
     if (villains != null && villains.length > -1)
     {
        villains.forEach((creature) => this.villains.push(creature));
@@ -46,12 +49,24 @@ export class InitiativeView extends ItemView {
     return "scroll-text";
   }
   async onOpen() {
+
+    function createHeader(header:string, parent:HTMLElement, open: (evt: MouseEvent) => any): void {
+      let headerElement = parent.createDiv({cls: "flex"});
+      headerElement.createEl('h3', {text: header})
+      let groupButton = new ButtonComponent(headerElement);
+      groupButton.setButtonText("Add Group");
+      groupButton.onClick(open);
+      groupButton.setClass("adjustInitiativeHeaderButton");
+    }
+
     this.contentEl.empty();
     this.gridEl = this.contentEl.createDiv();
     this.createInputSection();
-    this.gridEl.createEl('h3', {text: "Heroes"})
+
+    createHeader("Heroes", this.gridEl, this.openCreateGroupModal);
     this.createTable(true);
-    this.gridEl.createEl('h3', {text: "Villains"})
+    
+    createHeader("Villains", this.gridEl, this.openCreateGroupModal);
     this.createTable(false);
   }
 
@@ -64,12 +79,15 @@ export class InitiativeView extends ItemView {
 
     this.nameInput = new TextComponent(this.formEl).setPlaceholder("Name");
     this.nameInput.inputEl.addClass("padded-input");
+    this.nameInput.inputEl.addClass("thirdWidth");
 
     this.staminaInput = new TextComponent(this.formEl).setPlaceholder("Max stamina");
     this.staminaInput.inputEl.addClass("padded-input");
+    this.staminaInput.inputEl.addClass("thirdWidth");
     
     this.minionStaminaInput = new TextComponent(this.formEl).setPlaceholder("Minion stamina");
     this.minionStaminaInput.inputEl.addClass("padded-input");
+    this.minionStaminaInput.inputEl.addClass("thirdWidth");
     this.minionStaminaInput.inputEl.hidden = true;
 
     this.minionCountInput = new DropdownComponent(this.formEl)
@@ -416,5 +434,11 @@ export class InitiativeView extends ItemView {
     {
       this.villainsTableEl.children[i].remove();
     }
+  }
+
+  openCreateGroupModal() {
+    console.log("I Tried");
+    let modal = new Modal(this.app);
+    modal.open();
   }
 }

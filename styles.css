@@ -2,6 +2,10 @@
     background-color: var(--color-red);
    }
 
+.thirdWidth{
+    width: 33%;
+}
+
 .condition-buttons {
     display: flex;
     flex-flow: row wrap;
@@ -17,11 +21,16 @@
     display: table;
     width: 100%;
 }
-
+.flex {
+    display: flex;
+}
 .tableCell {
     display: table-cell;
 }
-
+.adjustInitiativeHeaderButton{
+    margin-top: 15px;
+    margin-left: 5px;
+}
 .roundHeader {
     width: 50%;
     display: table-cell;
