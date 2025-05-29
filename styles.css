@@ -93,6 +93,15 @@
     margin-right: 5px;
 }
 
+.twentyPixelHeight{
+    height: 20px;
+}
+
+.interactiveColor {
+    background-color: var(--interactive-normal);
+    box-shadow: var(--input-shadow);
+}
+
 .padded {
     margin-left: 5px;
     margin-right: 5px;
@@ -121,11 +130,22 @@
     padding: 5px;
     width: 100%;
 }
-
 .trackerTableCellStyle {
     border: 1px solid;
     border-collapse: collapse;
     padding: 5px;
+}
+.trackerCellButtonStyle {
+    height: 55px;
+    color: var(--color-base-00);
+    background-color: transparent;
+    font-weight: bolder;
+}
+.trackerCellRemoveButtonStyle {
+    text-align: center;
+    height: 55px;
+    color: var(--color-red);
+    margin-bottom: -20px;
 }
 
 .name-Cell {

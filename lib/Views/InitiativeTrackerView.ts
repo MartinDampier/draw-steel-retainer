@@ -199,9 +199,11 @@ export class InitiativeView extends ItemView {
     header.createEl('th', {text: 'Acted', cls: 'trackerTableCellStyle'});
     
     let createButtonHeader = header.createEl('th', { cls: 'trackerTableCellStyle'});
-    let resetButtonComp = new ButtonComponent(createButtonHeader)
-    resetButtonComp.setButtonText("Clear");
-    resetButtonComp.setClass("headerButtonRight");
+    let resetButtonComp = new ExtraButtonComponent(createButtonHeader)
+    resetButtonComp.extraSettingsEl.setText("Clear");
+    resetButtonComp.extraSettingsEl.addClass("headerButtonRight");
+    resetButtonComp.extraSettingsEl.addClass("twentyPixelHeight");
+    resetButtonComp.extraSettingsEl.addClass("interactiveColor");
     if (isHero) {
       resetButtonComp.onClick( () => {
         this.clearHeroesTable();
@@ -283,25 +285,28 @@ export class InitiativeView extends ItemView {
       row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell trackerTableCellStyle"})
       this.updateStamina(row, creature.CurrentStamina.toString(), creature.Type == CreatureTypes.Minion)
       let buttonCell = row.createEl('td', {cls: Green + " trackerTableCellStyle"});
-      let buttonComp = new ButtonComponent(buttonCell);
-      buttonComp.setButtonText(No);
-      buttonComp.setClass(Fill);
+      let buttonComp = new ExtraButtonComponent(buttonCell);
+      buttonComp.extraSettingsEl.setText(No);
+      buttonComp.extraSettingsEl.addClass(Fill);
+      buttonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
       buttonComp.onClick( () => {
-        this.changeTriggeredActionCell(row, buttonComp, buttonComp.buttonEl.getText() == No);
+        this.changeTriggeredActionCell(row, buttonComp, buttonComp.extraSettingsEl.getText() == No);
       });
       let actedButtonCell = row.createEl('td', {cls: Green + " trackerTableCellStyle"});
-      let actedButtonComp = new ButtonComponent(actedButtonCell);
-      actedButtonComp.setButtonText(No);
-      actedButtonComp.setClass(Fill);
+      let actedButtonComp = new ExtraButtonComponent(actedButtonCell);
+      actedButtonComp.extraSettingsEl.setText(No);
+      actedButtonComp.extraSettingsEl.addClass(Fill);
+      actedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
       actedButtonComp.onClick( () => {
-        this.changeActedCell(row, actedButtonComp, actedButtonComp.buttonEl.getText() == No);
+        this.changeActedCell(row, actedButtonComp, actedButtonComp.extraSettingsEl.getText() == No);
       });
       buttonCell = row.createEl('td', {cls: 'trackerTableCellStyle'});
-      let removeButton = new ButtonComponent(buttonCell);
-      removeButton.buttonEl.addClass("padded");
+      let removeButton = new ExtraButtonComponent(buttonCell);
+      removeButton.extraSettingsEl.addClass("trackerCellRemoveButtonStyle");
+      removeButton.extraSettingsEl.addClass("interactiveColor");
       removeButton.onClick(() => {this.removeRow(row)});
       buttonCell.createEl('br');
-      removeButton.setButtonText("Remove");
+      removeButton.extraSettingsEl.setText("Remove");
     }
     catch(e)
     {
@@ -360,31 +365,31 @@ export class InitiativeView extends ItemView {
     }
   }
 
-  changeActedCell(row : HTMLTableRowElement, buttonComp : ButtonComponent, hasActed : boolean) {
+  changeActedCell(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
     if (hasActed)
     {
-      buttonComp.setButtonText(Yes);
+      buttonComp.extraSettingsEl.setText(Yes);
       row.children[3].addClass(Red);
       row.children[3].removeClass(Green);
     }
     else
     {
-      buttonComp.setButtonText(No);
+      buttonComp.extraSettingsEl.setText(No);
       row.children[3].addClass(Green);
       row.children[3].removeClass(Red);
     }
   }
 
-  changeTriggeredActionCell(row : HTMLTableRowElement, buttonComp : ButtonComponent, hasActed : boolean) {
+  changeTriggeredActionCell(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
     if (hasActed)
     {
-      buttonComp.setButtonText(Yes);
+      buttonComp.extraSettingsEl.setText(Yes);
       row.children[2].addClass(Red);
       row.children[2].removeClass(Green);
     }
     else
     {
-      buttonComp.setButtonText(No);
+      buttonComp.extraSettingsEl.setText(No);
       row.children[2].addClass(Green);
       row.children[2].removeClass(Red);
     }
