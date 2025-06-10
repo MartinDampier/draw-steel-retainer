@@ -62,7 +62,6 @@ export class NegotiationView extends ItemView {
 
         let motivationDiv = this.wizardEl.createDiv();
         addLabel(motivationDiv, 'Motivations');
-        let motivationOneDropdown = new DropdownComponent(motivationDiv);
         let motivationTwoDropdown = new DropdownComponent(motivationDiv);
         motivationOneDropdown.selectEl.addClass('wizardSelect');
         motivationTwoDropdown.selectEl.addClass('wizardSelect');
