@@ -10,6 +10,9 @@ export class InitiativeView extends ItemView {
   gridEl: HTMLDivElement;
   formEl: HTMLDivElement;
   roundEl: HTMLDivElement;
+  draggedItemIndex: number;
+  heroesTableDragIndex: number;
+  villainsTableDragIndex: number;
   heroesTableEl: HTMLDivElement;
   villainsTableEl: HTMLDivElement;
   nameInput: TextComponent;
@@ -48,6 +51,7 @@ export class InitiativeView extends ItemView {
   getIcon() {
     return "scroll-text";
   }
+
   async onOpen() {
 
     function createHeader(header:string, parent:HTMLElement, open: (evt: MouseEvent) => any): void {
@@ -224,7 +228,7 @@ export class InitiativeView extends ItemView {
       //buttonHeader.createEl('button', { text: "Create"});
     }
 
-    createCreatureRow(creature: Creature = new Creature, isHero: boolean){
+  createCreatureRow(creature: Creature = new Creature, isHero: boolean){
       if (creature.Name == "")
       {
         if (this.nameInput.getValue() == "")
@@ -249,17 +253,19 @@ export class InitiativeView extends ItemView {
         this.staminaInput.setValue('');
       }
       creature.CurrentStamina = creature.MaxStamina;
-      this.addRow(creature, isHero);
-    }
-    
-    addRow(creature: Creature, isHero: boolean){
       try{
         if (isHero)
           this.heroes.push(creature);
       else
         this.villains.push(creature);
       let row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered"}) : this.villainsTableEl.createEl('tr', {cls: "Centered"});
+
       row.draggable = true;
+      row.ondragstart = (e) => this.onHeroTableRowDragStart(e, creature);
+      row.ondragend = (e) => this.onHeroTableRowDragEnd(e);  
+      row.ondragenter = (e) => this.onHeroTableRowDragEnter(e, this.heroes.indexOf(creature));
+
+
       row.id = isHero ? "Hero " + this.heroes.indexOf(creature) : "Villain " + this.villains.indexOf(creature);
       let nameCell = row.createEl('td', {text: creature.Name, cls: "Centered name-Cell trackerTableCellStyle"});
       nameCell.createDiv({text: creature.Type?.toString(), cls: "verticalType topAlign"})
@@ -317,6 +323,33 @@ export class InitiativeView extends ItemView {
         console.log(e.name);
       }
     }
+  }
+    
+
+  onHeroTableRowDragStart(event: DragEvent, creature: Creature) {
+    this.draggedItemIndex = this.heroes.indexOf(creature);
+    console.log(this.heroes.indexOf(creature));
+    if (event.dataTransfer != null){
+      event.dataTransfer.dropEffect = "move";
+      event.dataTransfer.effectAllowed = "all";
+    }
+  }
+  
+  onHeroTableRowDragEnter(event: DragEvent, index: number){
+    if (event.dataTransfer != null){
+      this.heroesTableDragIndex = index
+      console.log(this.heroesTableDragIndex);
+    }
+  }
+
+  onHeroTableRowDragEnd(event: DragEvent) {
+    console.log("END");
+    
+  }
+
+  onHeroTableRowDrop(event: DragEvent, creature: Creature){
+    console.log("Dropping");
+    console.log(creature.Name);
   }
 
   toggleColors(ebc: ExtraButtonComponent) {
