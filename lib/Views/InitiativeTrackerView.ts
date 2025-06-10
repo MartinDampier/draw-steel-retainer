@@ -259,6 +259,7 @@ export class InitiativeView extends ItemView {
       else
         this.villains.push(creature);
       let row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered"}) : this.villainsTableEl.createEl('tr', {cls: "Centered"});
+      row.draggable = true;
       row.id = isHero ? "Hero " + this.heroes.indexOf(creature) : "Villain " + this.villains.indexOf(creature);
       let nameCell = row.createEl('td', {text: creature.Name, cls: "Centered name-Cell trackerTableCellStyle"});
       nameCell.createDiv({text: creature.Type?.toString(), cls: "verticalType topAlign"})
