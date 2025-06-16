@@ -354,8 +354,9 @@ export class InitiativeView extends ItemView {
     {
       if (e instanceof Error) 
       {
-        console.log(e.message);
-        console.log(e.name);
+        //debug
+        //console.log(e.message);
+        //console.log(e.name);
       }
     }
   }
@@ -363,7 +364,7 @@ export class InitiativeView extends ItemView {
 
   onHeroTableRowDragStart(event: DragEvent, creature: Creature) {
     this.draggedItemIndex = this.heroes.indexOf(creature);
-    console.log(this.heroes.indexOf(creature));
+    //console.log(this.heroes.indexOf(creature));
     if (event.dataTransfer != null){
       event.dataTransfer.dropEffect = "move";
       event.dataTransfer.effectAllowed = "all";
@@ -373,18 +374,18 @@ export class InitiativeView extends ItemView {
   onHeroTableRowDragEnter(event: DragEvent, index: number){
     if (event.dataTransfer != null){
       this.heroesTableDragIndex = index
-      console.log(this.heroesTableDragIndex);
+      //console.log(this.heroesTableDragIndex);
     }
   }
 
   onHeroTableRowDragEnd(event: DragEvent) {
-    console.log("END");
+    //console.log("END");
     
   }
 
   onHeroTableRowDrop(event: DragEvent, creature: Creature){
-    console.log("Dropping");
-    console.log(creature.Name);
+    //console.log("Dropping");
+    //console.log(creature.Name);
   }
 
   toggleColors(ebc: ExtraButtonComponent) {
@@ -429,8 +430,8 @@ export class InitiativeView extends ItemView {
     catch(e)
     {
       let result = (e as Error).message;
-      console.log("ERROR:");
-      console.log(result);
+      //console.log("ERROR:");
+      //console.log(result);
     }
   }
 
@@ -550,7 +551,6 @@ export class InitiativeView extends ItemView {
   }
 
   openCreateGroupModal() {
-    console.log("I Tried");
     let modal = new Modal(this.app);
     modal.open();
   }
