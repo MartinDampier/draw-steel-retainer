@@ -5,6 +5,7 @@ import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, T
 import { isSharedArrayBuffer } from 'util/types';
 import { CreatureTypes } from 'lib/Models/CreatureTypes';
 import { group } from 'console';
+import { clearScreenDown } from 'readline';
 
 export class InitiativeView extends ItemView {
   gridEl: HTMLDivElement;
@@ -149,20 +150,20 @@ export class InitiativeView extends ItemView {
     this.malice = malice;
     div = div ?? this.roundEl.createDiv({cls: "rightAlign maliceHeader"});
     div.setText("Malice: " + this.malice);
-      let plusMalice = new ButtonComponent(div);
-      plusMalice.setButtonText("+1");
-      plusMalice.setClass("headerButtonLeft");
-      plusMalice.onClick( () => {
-        this.malice++;
-        this.setMalice(this.malice, div);
-      });
-      let minusMalice = new ButtonComponent(div);
-      minusMalice.setButtonText("-1");
-      minusMalice.setClass("headerButtonLeft");
-      minusMalice.onClick( () => {
-        this.malice--;
-        this.setMalice(this.malice, div);
-      });
+    let minusMalice = new ButtonComponent(div);
+    minusMalice.setButtonText("-1");
+    minusMalice.setClass("headerButtonLeft");
+    minusMalice.onClick( () => {
+      this.malice--;
+      this.setMalice(this.malice, div);
+    });
+    let plusMalice = new ButtonComponent(div);
+    plusMalice.setButtonText("+1");
+    plusMalice.setClass("headerButtonLeft");
+    plusMalice.onClick( () => {
+      this.malice++;
+      this.setMalice(this.malice, div);
+    });
   }
 
   setRound(round: number, div? : HTMLDivElement){
@@ -265,11 +266,30 @@ export class InitiativeView extends ItemView {
       row.ondragend = (e) => this.onHeroTableRowDragEnd(e);  
       row.ondragenter = (e) => this.onHeroTableRowDragEnter(e, this.heroes.indexOf(creature));
 
-
       row.id = isHero ? "Hero " + this.heroes.indexOf(creature) : "Villain " + this.villains.indexOf(creature);
-      let nameCell = row.createEl('td', {text: creature.Name, cls: "Centered name-Cell trackerTableCellStyle"});
-      nameCell.createDiv({text: creature.Type?.toString(), cls: "verticalType topAlign"})
-      nameCell.createEl("br");
+      let nameCell = row.createEl('td', {cls: "Centered name-Cell trackerTableCellStyle"});
+      let nameTable =  nameCell.createDiv({cls: "tableStyle"});
+
+      let nameRow = nameTable.createDiv({cls: "tableRowStyle"});
+      let creatureType = nameRow.createDiv({text: creature.Type?.toString(), cls: "verticalType topAlign" })
+      creatureType.setAttribute('rowspan', '2'); 
+      
+      nameRow.createDiv({text: creature.Name, cls: "tableCell fullWidth"})
+      //this.nameInput = new TextComponent(this.formEl).setPlaceholder("Name");
+      let renameField = new TextComponent(nameRow);
+      let renameid = "rename" +  (isHero ? "Hero " + this.heroes.indexOf(creature) : "Villain " + this.villains.indexOf(creature))
+      renameField.inputEl.id = renameid;
+      renameField.setValue(creature.Name);
+      renameField.inputEl.hidden = true;
+      renameField.inputEl.addClass("fullWidth");
+      renameField.inputEl.addClass("Centered");
+      renameField.inputEl.addClass("fontFifteen");
+      
+      let changeNameButton = new ExtraButtonComponent(nameRow).setIcon("pencil-line").setTooltip("Rename");
+      changeNameButton.onClick(() => this.allowRename(nameRow, renameid));
+      changeNameButton.extraSettingsEl.addClass("rightAlign");
+      changeNameButton.extraSettingsEl.addClass("tableCell");
+      changeNameButton.extraSettingsEl.addClass("renameButton");
       let nameCellDiv = nameCell.createDiv({cls: "condition-buttons"});
       let button1 = new ExtraButtonComponent(nameCellDiv).setIcon("droplet").setTooltip("Bleeding"); //Bleeding
       button1.onClick( () => this.toggleColors(button1) )
@@ -294,7 +314,6 @@ export class InitiativeView extends ItemView {
       let buttonCell = row.createEl('td', {cls: Green + " trackerTableCellStyle"});
       let buttonComp = new ExtraButtonComponent(buttonCell);
       buttonComp.extraSettingsEl.setText(No);
-      buttonComp.extraSettingsEl.addClass(Fill);
       buttonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
       buttonComp.onClick( () => {
         this.changeTriggeredActionCell(row, buttonComp, buttonComp.extraSettingsEl.getText() == No);
@@ -302,7 +321,6 @@ export class InitiativeView extends ItemView {
       let actedButtonCell = row.createEl('td', {cls: Green + " trackerTableCellStyle"});
       let actedButtonComp = new ExtraButtonComponent(actedButtonCell);
       actedButtonComp.extraSettingsEl.setText(No);
-      actedButtonComp.extraSettingsEl.addClass(Fill);
       actedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
       actedButtonComp.onClick( () => {
         this.changeActedCell(row, actedButtonComp, actedButtonComp.extraSettingsEl.getText() == No);
@@ -386,10 +404,10 @@ export class InitiativeView extends ItemView {
         staminaDiv.createDiv({ text: "[" + minionStamina + "]", cls: "tableCell", title: "Per Minion"})
       staminaDiv.createDiv({ text: "Current: " + stamina, cls: "tableCell"})
       staminaCell.createEl('br');
-      new ButtonComponent(staminaCell).setButtonText("+5").onClick(() => {this.updateStamina(row, (+stamina + 5).toString(), isMinion)}).setClass('slimButton');
-      new ButtonComponent(staminaCell).setButtonText("+1").onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)}).setClass('slimButton');
-      new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)}).setClass('slimButton');
       new ButtonComponent(staminaCell).setButtonText("-5").onClick(() => {this.updateStamina(row, (+stamina - 5).toString(), isMinion)}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("+1").onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)}).setClass('slimButton');
+      new ButtonComponent(staminaCell).setButtonText("+5").onClick(() => {this.updateStamina(row, (+stamina + 5).toString(), isMinion)}).setClass('slimButton');
     }
     catch(e)
     {
@@ -479,5 +497,27 @@ export class InitiativeView extends ItemView {
     console.log("I Tried");
     let modal = new Modal(this.app);
     modal.open();
+  }
+
+  allowRename( row: HTMLDivElement, id: string){
+    let nameField = row.children[1] as HTMLDivElement;
+    let renameField = row.children[2] as HTMLInputElement;
+    if (!renameField.hidden)
+    {
+      nameField.setText(renameField.value); 
+    }
+    renameField.hidden = !renameField.hidden;
+    if(nameField.classList.contains("hideStyle")) {
+      nameField.removeClass("hideStyle");
+      nameField.addClass("fullWidth");
+      nameField.addClass("tableCell");
+    }
+    else {
+      nameField.addClass("hideStyle");
+      nameField.removeClass("fullWidth");
+      nameField.removeClass("tableCell");
+    }
+    if (!renameField.hidden)
+      document.getElementById(id)?.focus();
   }
 }
