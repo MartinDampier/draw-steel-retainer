@@ -14,6 +14,12 @@
 .thirdWidth{
     width: 33%;
 }
+.maxThirdWidth{
+    max-width: 33%;
+}
+.minthirdWidth{
+    min-width: 33%;
+}
 .fullWidth{
     width: 100%;
 }

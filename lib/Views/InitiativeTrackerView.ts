@@ -84,18 +84,19 @@ export class InitiativeView extends ItemView {
 
     this.nameInput = new TextComponent(this.formEl).setPlaceholder("Name");
     this.nameInput.inputEl.addClass("padded-input");
-    this.nameInput.inputEl.addClass("thirdWidth");
+    this.nameInput.inputEl.addClass("minthirdWidth");
 
     this.staminaInput = new TextComponent(this.formEl).setPlaceholder("Max stamina");
     this.staminaInput.inputEl.addClass("padded-input");
-    this.staminaInput.inputEl.addClass("thirdWidth");
+    this.staminaInput.inputEl.addClass("minthirdWidth");
     
     this.minionStaminaInput = new TextComponent(this.formEl).setPlaceholder("Minion stamina");
     this.minionStaminaInput.inputEl.addClass("padded-input");
-    this.minionStaminaInput.inputEl.addClass("thirdWidth");
+    this.minionStaminaInput.inputEl.addClass("minthirdWidth");
     this.minionStaminaInput.inputEl.hidden = true;
 
-    this.minionCountInput = new DropdownComponent(this.formEl)
+    let buttonDiv = this.formEl.createDiv();
+    this.minionCountInput = new DropdownComponent(buttonDiv)
       .addOption("1", "1")
       .addOption("2", "2")
       .addOption("3", "3")
@@ -108,7 +109,7 @@ export class InitiativeView extends ItemView {
     this.minionCountInput.selectEl.addClass("padded-input");
     this.minionCountInput.selectEl.hidden = true;
 
-    this.typeInput = new DropdownComponent(this.formEl)
+    this.typeInput = new DropdownComponent(buttonDiv)
       .addOption(CreatureTypes.Hero.toString(), CreatureTypes.Hero.toString())
       .addOption(CreatureTypes.Minion.toString(), CreatureTypes.Minion.toString())
       .addOption(CreatureTypes.Platoon.toString(), CreatureTypes.Platoon.toString())
@@ -129,11 +130,11 @@ export class InitiativeView extends ItemView {
         }
       });
     this.typeInput.selectEl.addClass("padded-input");
-    let heroButtonComp = new ButtonComponent(this.formEl);
+    let heroButtonComp = new ButtonComponent(buttonDiv);
     heroButtonComp.setButtonText("Hero");
     heroButtonComp.setClass("padded-input");
     heroButtonComp.onClick( () => this.createCreatureRow(undefined, true));
-    let villainButtonComp = new ButtonComponent(this.formEl);
+    let villainButtonComp = new ButtonComponent(buttonDiv);
     villainButtonComp.setButtonText("Villain");
     villainButtonComp.setClass("padded-input");
     villainButtonComp.onClick( () => this.createCreatureRow(undefined, false));
