@@ -1,6 +1,6 @@
 import { createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
-import { INITIATIVE_VIEW, Red, Green, Yes, No, Fill } from 'lib/Models/Constants';
+import { INITIATIVE_VIEW, Red, Green, Orange, Yes, No, Fill } from 'lib/Models/Constants';
 import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent, DropdownComponent, Modal, App } from 'obsidian';
 import { isSharedArrayBuffer } from 'util/types';
 import { CreatureTypes } from 'lib/Models/CreatureTypes';
@@ -325,6 +325,23 @@ export class InitiativeView extends ItemView {
       actedButtonComp.onClick( () => {
         this.changeActedCell(row, actedButtonComp, actedButtonComp.extraSettingsEl.getText() == No);
       });
+      if (creature.Type == "Solo") {
+        let secondActedButtonComp = new ExtraButtonComponent(actedButtonCell);
+        secondActedButtonComp.extraSettingsEl.setText(No);
+        secondActedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
+        secondActedButtonComp.extraSettingsEl.addClass("trackerCellButtonHalfHeight");
+        actedButtonComp.extraSettingsEl.addClass("trackerCellButtonHalfHeight");
+        secondActedButtonComp.onClick( () => {
+          this.actedButtonTwoClick(row, secondActedButtonComp, secondActedButtonComp.extraSettingsEl.getText() == No);
+        });
+        actedButtonComp.onClick( () => {
+        this.actedButtonOneClick(row, actedButtonComp, actedButtonComp.extraSettingsEl.getText() == No);
+      });
+      } else
+      {
+        actedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
+        actedButtonComp.extraSettingsEl.addClass("trackerCellButtonFullHeight");
+      }
       buttonCell = row.createEl('td', {cls: 'trackerTableCellStyle'});
       let removeButton = new ExtraButtonComponent(buttonCell);
       removeButton.extraSettingsEl.addClass("trackerCellRemoveButtonStyle");
@@ -428,6 +445,45 @@ export class InitiativeView extends ItemView {
     {
       buttonComp.extraSettingsEl.setText(No);
       row.children[3].addClass(Green);
+      row.children[3].removeClass(Red);
+    }
+  }
+
+  actedButtonOneClick(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
+    this.soloActedButtonClickInner(row, buttonComp, hasActed, 1);
+  }
+  actedButtonTwoClick(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
+    this.soloActedButtonClickInner(row, buttonComp, hasActed, 0);
+  }
+  soloActedButtonClickInner(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean, child: number){
+    let otherHasActed = row.children[3].children[child].textContent == "Yes";
+    
+    if (hasActed)
+    {
+      buttonComp.extraSettingsEl.setText(Yes);
+      if (otherHasActed)
+      {
+        row.children[3].addClass(Red);
+        row.children[3].removeClass(Orange);
+      }
+      else
+      {
+        row.children[3].addClass(Orange);
+      }
+      row.children[3].removeClass(Green);
+    }
+    else
+    {
+      buttonComp.extraSettingsEl.setText(No);
+      if (otherHasActed)
+      {
+        row.children[3].addClass(Orange);
+      }
+      else
+      {
+        row.children[3].addClass(Green);
+        row.children[3].removeClass(Orange);
+      }
       row.children[3].removeClass(Red);
     }
   }

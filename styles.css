@@ -1,7 +1,12 @@
-.red{
+.green {
+    background-color: var(--color-green);
+}
+.red {
     background-color: var(--color-red);
-   }
-
+}
+.orange{
+    background-color: var(--color-orange);
+}
 
 .hideStyle{
     display: none;
@@ -63,9 +68,6 @@
 }
 .fontFifteen {
     font-size: 15px;
-}
-.green {
-    background-color: var(--color-green);
 }
    
 .Centered{
@@ -151,11 +153,16 @@
     padding: 5px;
 }
 .trackerCellButtonStyle {
-    height: 55px;
     color: var(--color-base-00);
     background-color: transparent;
     font-weight: bolder;
     width: 100%;
+}
+.trackerCellButtonFullHeight{
+    height: 55px;
+}
+.trackerCellButtonHalfHeight{
+    height: 22.5px;
 }
 .trackerCellRemoveButtonStyle {
     text-align: center;
