@@ -55,23 +55,19 @@ export class InitiativeView extends ItemView {
 
   async onOpen() {
 
-    function createHeader(header:string, parent:HTMLElement, open: (evt: MouseEvent) => any): void {
+    function createHeader(header:string, parent:HTMLElement): void {
       let headerElement = parent.createDiv({cls: "flex"});
       headerElement.createEl('h3', {text: header})
-      let groupButton = new ButtonComponent(headerElement);
-      groupButton.setButtonText("Add Group");
-      groupButton.onClick(open);
-      groupButton.setClass("adjustInitiativeHeaderButton");
     }
 
     this.contentEl.empty();
     this.gridEl = this.contentEl.createDiv();
     this.createInputSection();
 
-    createHeader("Heroes", this.gridEl, this.openCreateGroupModal);
+    createHeader("Heroes", this.gridEl);
     this.createTable(true);
     
-    createHeader("Villains", this.gridEl, this.openCreateGroupModal);
+    createHeader("Villains", this.gridEl);
     this.createTable(false);
   }
 
@@ -95,8 +91,7 @@ export class InitiativeView extends ItemView {
     this.minionStaminaInput.inputEl.addClass("minthirdWidth");
     this.minionStaminaInput.inputEl.hidden = true;
 
-    let buttonDiv = this.formEl.createDiv();
-    this.minionCountInput = new DropdownComponent(buttonDiv)
+    this.minionCountInput = new DropdownComponent(this.formEl)
       .addOption("1", "1")
       .addOption("2", "2")
       .addOption("3", "3")
@@ -109,7 +104,7 @@ export class InitiativeView extends ItemView {
     this.minionCountInput.selectEl.addClass("padded-input");
     this.minionCountInput.selectEl.hidden = true;
 
-    this.typeInput = new DropdownComponent(buttonDiv)
+    this.typeInput = new DropdownComponent(this.formEl)
       .addOption(CreatureTypes.Hero.toString(), CreatureTypes.Hero.toString())
       .addOption(CreatureTypes.Minion.toString(), CreatureTypes.Minion.toString())
       .addOption(CreatureTypes.Platoon.toString(), CreatureTypes.Platoon.toString())
@@ -130,11 +125,11 @@ export class InitiativeView extends ItemView {
         }
       });
     this.typeInput.selectEl.addClass("padded-input");
-    let heroButtonComp = new ButtonComponent(buttonDiv);
+    let heroButtonComp = new ButtonComponent(this.formEl);
     heroButtonComp.setButtonText("Hero");
     heroButtonComp.setClass("padded-input");
     heroButtonComp.onClick( () => this.createCreatureRow(undefined, true));
-    let villainButtonComp = new ButtonComponent(buttonDiv);
+    let villainButtonComp = new ButtonComponent(this.formEl);
     villainButtonComp.setButtonText("Villain");
     villainButtonComp.setClass("padded-input");
     villainButtonComp.onClick( () => this.createCreatureRow(undefined, false));
@@ -229,6 +224,10 @@ export class InitiativeView extends ItemView {
       }
       //buttonHeader.createEl('button', { text: "Create"});
     }
+
+  createGroupRow(){
+
+  }
 
   createCreatureRow(creature: Creature = new Creature, isHero: boolean){
       if (creature.Name == "")
