@@ -24,6 +24,10 @@
     width: 100%;
 }
 
+.rowHeight {
+    height: 70px;
+}
+
 .condition-buttons {
     display: flex;
     flex-flow: row wrap;
@@ -41,6 +45,13 @@
 }
 .tableRowStyle{
     display: table-row;
+}
+.groupHeader{
+    margin-top: 11px;
+    margin-left: -13px;
+}
+.groupMinHeight{
+    min-height: 70px;
 }
 .flex {
     display: flex;
@@ -183,7 +194,7 @@
 
 .verticalType {
     transform: translate(-8%) rotate(-90deg) translate(-14px) ;
-    margin: -18px;
+    margin-left: -18px;
     width: 57px;
     font-weight: bold;
     margin-bottom: 5px;

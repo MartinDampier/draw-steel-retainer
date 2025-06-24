@@ -58,6 +58,7 @@ export class InitiativeView extends ItemView {
     function createHeader(header:string, parent:HTMLElement): void {
       let headerElement = parent.createDiv({cls: "flex"});
       headerElement.createEl('h3', {text: header})
+      headerElement.id = header;
     }
 
     this.contentEl.empty();
@@ -187,10 +188,18 @@ export class InitiativeView extends ItemView {
     let classes = "Centered" + (isHero ? " heroes" : " villains") + ' trackerTableStyle'; 
     if (isHero)
     {
+      let groupButton = new ButtonComponent(this.gridEl.children[2] as HTMLElement);
+      groupButton.setButtonText("Add Group");
+      groupButton.onClick(() => {this.createGroupRow(true);});
+      groupButton.setClass("adjustInitiativeHeaderButton");
       this.heroesTableEl = this.gridEl.createEl('table', {cls: classes});
     }
     else
     {
+      let groupButton = new ButtonComponent(this.gridEl.children[4] as HTMLElement);
+      groupButton.setButtonText("Add Group");
+      groupButton.onClick(() => {this.createGroupRow(false);});
+      groupButton.setClass("adjustInitiativeHeaderButton");
       this.villainsTableEl = this.gridEl.createEl('table', {cls: classes});
     }
     let header = isHero ? this.heroesTableEl.createEl('tr') : this.villainsTableEl.createEl('tr');
@@ -225,8 +234,10 @@ export class InitiativeView extends ItemView {
       //buttonHeader.createEl('button', { text: "Create"});
     }
 
-  createGroupRow(){
-
+  createGroupRow(isHero: boolean){
+    let row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered rowHeight"}) : this.villainsTableEl.createEl('tr', {cls: "Centered rowHeight"});
+    let creatureType = row.createDiv({text: "Group", cls: "verticalType" })
+    row.createEl("td", {cls: "rowHeight"} );
   }
 
   createCreatureRow(creature: Creature = new Creature, isHero: boolean){
