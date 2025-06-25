@@ -58,7 +58,6 @@ export class InitiativeView extends ItemView {
     function createHeader(header:string, parent:HTMLElement): void {
       let headerElement = parent.createDiv({cls: "flex"});
       headerElement.createEl('h3', {text: header})
-      headerElement.id = header;
     }
 
     this.contentEl.empty();
@@ -188,42 +187,34 @@ export class InitiativeView extends ItemView {
     let classes = "Centered" + (isHero ? " heroes" : " villains") + ' trackerTableStyle'; 
     if (isHero)
     {
-      let groupButton = new ButtonComponent(this.gridEl.children[2] as HTMLElement);
-      groupButton.setButtonText("Add Group");
-      groupButton.onClick(() => {this.createGroupRow(true);});
-      groupButton.setClass("adjustInitiativeHeaderButton");
       this.heroesTableEl = this.gridEl.createEl('table', {cls: classes});
     }
     else
     {
-      let groupButton = new ButtonComponent(this.gridEl.children[4] as HTMLElement);
-      groupButton.setButtonText("Add Group");
-      groupButton.onClick(() => {this.createGroupRow(false);});
-      groupButton.setClass("adjustInitiativeHeaderButton");
       this.villainsTableEl = this.gridEl.createEl('table', {cls: classes});
     }
     let header = isHero ? this.heroesTableEl.createEl('tr') : this.villainsTableEl.createEl('tr');
-    header.createEl('th', {text: 'Character', cls: 'name-Cell trackerTableCellStyle'});
-    header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell trackerTableCellStyle'});
-    header.createEl('th', {text: 'TA', title: "Triggered Action", cls: 'trackerTableCellStyle'});
-    header.createEl('th', {text: 'Acted', cls: 'trackerTableCellStyle'});
+    // header.createEl('th', {text: 'Character', cls: 'name-Cell trackerTableCellStyle'});
+    // header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell trackerTableCellStyle'});
+    // header.createEl('th', {text: 'TA', title: "Triggered Action", cls: 'trackerTableCellStyle'});
+    // header.createEl('th', {text: 'Acted', cls: 'trackerTableCellStyle'});
     
-    let createButtonHeader = header.createEl('th', { cls: 'trackerTableCellStyle'});
-    let resetButtonComp = new ExtraButtonComponent(createButtonHeader)
-    resetButtonComp.extraSettingsEl.setText("Clear");
-    resetButtonComp.extraSettingsEl.addClass("headerButtonRight");
-    resetButtonComp.extraSettingsEl.addClass("twentyPixelHeight");
-    resetButtonComp.extraSettingsEl.addClass("interactiveColor");
-    if (isHero) {
-      resetButtonComp.onClick( () => {
-        this.clearHeroesTable();
-      });
-    }
-    else {
-      resetButtonComp.onClick( () => {
-        this.clearVillainsTable();
-      });
-    }
+    // let createButtonHeader = header.createEl('th', { cls: 'trackerTableCellStyle'});
+    // let resetButtonComp = new ExtraButtonComponent(createButtonHeader)
+    // resetButtonComp.extraSettingsEl.setText("Clear");
+    // resetButtonComp.extraSettingsEl.addClass("headerButtonRight");
+    // resetButtonComp.extraSettingsEl.addClass("twentyPixelHeight");
+    // resetButtonComp.extraSettingsEl.addClass("interactiveColor");
+    // if (isHero) {
+    //   resetButtonComp.onClick( () => {
+    //     this.clearHeroesTable();
+    //   });
+    // }
+    // else {
+    //   resetButtonComp.onClick( () => {
+    //     this.clearVillainsTable();
+    //   });
+    // }
     if (isHero && this.heroes.length > -1)
       {
         this.heroes.forEach((creature) => this.createCreatureRow(creature, isHero));
@@ -234,10 +225,8 @@ export class InitiativeView extends ItemView {
       //buttonHeader.createEl('button', { text: "Create"});
     }
 
-  createGroupRow(isHero: boolean){
-    let row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered rowHeight"}) : this.villainsTableEl.createEl('tr', {cls: "Centered rowHeight"});
-    let creatureType = row.createDiv({text: "Group", cls: "verticalType" })
-    row.createEl("td", {cls: "rowHeight"} );
+  createGroupRow(){
+
   }
 
   createCreatureRow(creature: Creature = new Creature, isHero: boolean){
