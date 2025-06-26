@@ -54,20 +54,10 @@ export class InitiativeView extends ItemView {
   }
 
   async onOpen() {
-
-    function createHeader(header:string, parent:HTMLElement): void {
-      let headerElement = parent.createDiv({cls: "flex"});
-      headerElement.createEl('h3', {text: header})
-    }
-
     this.contentEl.empty();
     this.gridEl = this.contentEl.createDiv();
     this.createInputSection();
-
-    createHeader("Heroes", this.gridEl);
     this.createTable(true);
-    
-    createHeader("Villains", this.gridEl);
     this.createTable(false);
   }
 
@@ -184,7 +174,7 @@ export class InitiativeView extends ItemView {
   }
   //Create a HTML Table
   createTable(isHero: boolean) {
-    let classes = "Centered" + (isHero ? " heroes" : " villains") + ' trackerTableStyle'; 
+    let classes = "Centered" + (isHero ? " heroes" : " villains") + ' trackerTableStyle fiveTopAndBottomMargin'; 
     if (isHero)
     {
       this.heroesTableEl = this.gridEl.createEl('table', {cls: classes});
@@ -193,28 +183,30 @@ export class InitiativeView extends ItemView {
     {
       this.villainsTableEl = this.gridEl.createEl('table', {cls: classes});
     }
-    let header = isHero ? this.heroesTableEl.createEl('tr') : this.villainsTableEl.createEl('tr');
+    let header = isHero ? this.heroesTableEl.createEl('tr', {cls: 'tableHeaderHeight'}) : this.villainsTableEl.createEl('tr', {cls: 'tableHeaderHeight'});
+    let titleCell = header.createEl('th', { cls: 'ninetyPercentWidth leftAlign'});
+    isHero ? titleCell.createEl("h4", {text: "Heroes", cls: "noPaddingNoMargin"}) : titleCell.createEl("h4", {text: "Villains", cls: "noPaddingNoMargin"});
     // header.createEl('th', {text: 'Character', cls: 'name-Cell trackerTableCellStyle'});
     // header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell trackerTableCellStyle'});
     // header.createEl('th', {text: 'TA', title: "Triggered Action", cls: 'trackerTableCellStyle'});
     // header.createEl('th', {text: 'Acted', cls: 'trackerTableCellStyle'});
     
-    // let createButtonHeader = header.createEl('th', { cls: 'trackerTableCellStyle'});
-    // let resetButtonComp = new ExtraButtonComponent(createButtonHeader)
-    // resetButtonComp.extraSettingsEl.setText("Clear");
-    // resetButtonComp.extraSettingsEl.addClass("headerButtonRight");
-    // resetButtonComp.extraSettingsEl.addClass("twentyPixelHeight");
-    // resetButtonComp.extraSettingsEl.addClass("interactiveColor");
-    // if (isHero) {
-    //   resetButtonComp.onClick( () => {
-    //     this.clearHeroesTable();
-    //   });
-    // }
-    // else {
-    //   resetButtonComp.onClick( () => {
-    //     this.clearVillainsTable();
-    //   });
-    // }
+    let createButtonHeader = header.createEl('th', {cls: 'tenPercentWidth'});
+    let resetButtonComp = new ExtraButtonComponent(createButtonHeader)
+    resetButtonComp.extraSettingsEl.setText("Clear");
+    resetButtonComp.extraSettingsEl.addClass("headerButtonRight");
+    resetButtonComp.extraSettingsEl.addClass("fullFill");
+    resetButtonComp.extraSettingsEl.addClass("interactiveColor");
+    if (isHero) {
+      resetButtonComp.onClick( () => {
+        this.clearHeroesTable();
+      });
+    }
+    else {
+      resetButtonComp.onClick( () => {
+        this.clearVillainsTable();
+      });
+    }
     if (isHero && this.heroes.length > -1)
       {
         this.heroes.forEach((creature) => this.createCreatureRow(creature, isHero));

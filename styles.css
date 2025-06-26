@@ -14,16 +14,36 @@
 .thirdWidth{
     width: 33%;
 }
+.ninetyPercentWidth{
+    width: 90%;
+}
+.tenPercentWidth{
+    width: 10%;
+}
 .maxThirdWidth{
     max-width: 33%;
 }
+
+.noPaddingNoMargin{
+    padding: 0px;
+    margin: 0px;
+}
+
+.fiveTopAndBottomMargin{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .minthirdWidth{
     min-width: 33%;
 }
 .fullWidth{
     width: 100%;
 }
-
+.tableHeaderHeight {
+    height: 30px;
+    display: flex;
+}
 .rowHeight {
     height: 70px;
 }
@@ -97,6 +117,10 @@
     height: 90%;
     width: 90%;
 }
+.fullFill{
+    height: 90%;
+    width: 90%;
+}
 
 .padded-input {
     margin-left: 5px;
@@ -125,10 +149,6 @@
 .headerButtonRight {
     margin-left: 1px;
     margin-right: 5px;
-}
-
-.twentyPixelHeight{
-    height: 20px;
 }
 
 .interactiveColor {
