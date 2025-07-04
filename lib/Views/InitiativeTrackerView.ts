@@ -259,7 +259,17 @@ export class InitiativeView extends ItemView {
       row.ondragenter = (e) => this.onHeroTableRowDragEnter(e, this.heroes.indexOf(creature));
 
       row.id = isHero ? "Hero " + this.heroes.indexOf(creature) : "Villain " + this.villains.indexOf(creature);
-      let nameCell = row.createEl('td', {cls: "Centered name-Cell trackerTableCellStyle"});
+
+      let tempTable = row.createEl('table')
+      let tempHeader = tempTable.createEl('tr');
+      tempHeader.createEl('th' , {text: 'Name'});
+      tempHeader.createEl('th' , {text: 'Stamina'});
+      tempHeader.createEl('th' , {text: 'Acted'});
+      tempHeader.createEl('th' , {text: 'FTA'});
+      tempHeader.createEl('th' , {text: ''});
+
+      let tempRow = tempTable.createEl('tr');
+      let nameCell = tempRow.createEl('td', {cls: "Centered name-Cell trackerTableCellStyle"});
       let nameTable =  nameCell.createDiv({cls: "tableStyle"});
 
       let nameRow = nameTable.createDiv({cls: "tableRowStyle"});
@@ -301,16 +311,17 @@ export class InitiativeView extends ItemView {
       button8.onClick( () => this.toggleColors(button8) )
       let button9 = new ExtraButtonComponent(nameCellDiv).setIcon("heart-crack").setTooltip("Weakened"); //Weakened
       button9.onClick( () => this.toggleColors(button9) )
-      row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell trackerTableCellStyle"})
+
+      tempRow.createEl('td', {text: "stamina", cls: "Centered stamina-Cell trackerTableCellStyle"})
       this.updateStamina(row, creature.CurrentStamina.toString(), creature.Type == CreatureTypes.Minion)
-      let buttonCell = row.createEl('td', {cls: Green + " trackerTableCellStyle"});
+      let buttonCell = tempRow.createEl('td', {cls: Green + " trackerTableCellStyle"});
       let buttonComp = new ExtraButtonComponent(buttonCell);
       buttonComp.extraSettingsEl.setText(No);
       buttonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
       buttonComp.onClick( () => {
         this.changeTriggeredActionCell(row, buttonComp, buttonComp.extraSettingsEl.getText() == No);
       });
-      let actedButtonCell = row.createEl('td', {cls: Green + " trackerTableCellStyle"});
+      let actedButtonCell = tempRow.createEl('td', {cls: Green + " trackerTableCellStyle"});
       let actedButtonComp = new ExtraButtonComponent(actedButtonCell);
       actedButtonComp.extraSettingsEl.setText(No);
       actedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
@@ -334,7 +345,7 @@ export class InitiativeView extends ItemView {
         actedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
         actedButtonComp.extraSettingsEl.addClass("trackerCellButtonFullHeight");
       }
-      buttonCell = row.createEl('td', {cls: 'trackerTableCellStyle'});
+      buttonCell = tempRow.createEl('td', {cls: 'trackerTableCellStyle'});
       let removeButton = new ExtraButtonComponent(buttonCell);
       removeButton.extraSettingsEl.addClass("trackerCellRemoveButtonStyle");
       removeButton.extraSettingsEl.addClass("interactiveColor");
