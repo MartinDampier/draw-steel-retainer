@@ -99,6 +99,7 @@
 
 .activatedButton {
     color: var(--interactive-accent);
+    font-weight: bold;
 }
 .renameButton {
     width: 20px;
@@ -188,13 +189,33 @@
 .trackerTableCellStyle {
     border: 1px solid;
     border-collapse: collapse;
-    padding: 5px;
+}
+.trackerTableNameCellStyle {
+    border: 1px solid;
+    border-collapse: collapse;
+    border-bottom-left-radius: 10px;
+    padding: 0px 0px 0px 5px;
+}
+.trackerTableRemoveCellStyle {
+    border: 1px solid;
+    border-collapse: collapse;
+    border-bottom-right-radius: 10px;
+    padding: 0px 0px 0px 5px;
 }
 .trackerCellButtonStyle {
     color: var(--color-base-00);
     background-color: transparent;
     font-weight: bolder;
     width: 100%;
+}
+.tenRadiusTopLeft{
+    border-top-left-radius: 10px;
+}
+.tenRadiusTopRight{
+    border-top-right-radius: 10px;
+}
+.trackerRowTableStyle {
+    border-spacing: 0px;
 }
 .trackerCellButtonFullHeight{
     height: 55px;
