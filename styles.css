@@ -200,6 +200,8 @@
     border: 1px solid;
     border-collapse: collapse;
     border-bottom-right-radius: 10px;
+}
+.leftPaddingFive{
     padding: 0px 0px 0px 5px;
 }
 .trackerCellButtonStyle {
@@ -215,6 +217,7 @@
     border-top-right-radius: 10px;
 }
 .trackerRowTableStyle {
+    margin-top: 5px;
     border-spacing: 0px;
 }
 .trackerCellButtonFullHeight{
