@@ -1,6 +1,52 @@
-.red{
+.green {
+    background-color: var(--color-green);
+}
+.red {
     background-color: var(--color-red);
-   }
+}
+.orange{
+    background-color: var(--color-orange);
+}
+
+.hideStyle{
+    display: none;
+}
+.thirdWidth{
+    width: 33%;
+}
+.ninetyPercentWidth{
+    width: 90%;
+}
+.tenPercentWidth{
+    width: 10%;
+}
+.maxThirdWidth{
+    max-width: 33%;
+}
+
+.noPaddingNoMargin{
+    padding: 0px;
+    margin: 0px;
+}
+
+.fiveTopAndBottomMargin{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.minthirdWidth{
+    min-width: 33%;
+}
+.fullWidth{
+    width: 100%;
+}
+.tableHeaderHeight {
+    height: 30px;
+    display: flex;
+}
+.rowHeight {
+    height: 70px;
+}
 
 .condition-buttons {
     display: flex;
@@ -17,11 +63,26 @@
     display: table;
     width: 100%;
 }
-
+.tableRowStyle{
+    display: table-row;
+}
+.groupHeader{
+    margin-top: 11px;
+    margin-left: -13px;
+}
+.groupMinHeight{
+    min-height: 70px;
+}
+.flex {
+    display: flex;
+}
 .tableCell {
     display: table-cell;
 }
-
+.adjustInitiativeHeaderButton{
+    margin-top: 15px;
+    margin-left: 5px;
+}
 .roundHeader {
     width: 50%;
     display: table-cell;
@@ -38,10 +99,13 @@
 
 .activatedButton {
     color: var(--interactive-accent);
+    font-weight: bold;
 }
-
-.green {
-    background-color: var(--color-green);
+.renameButton {
+    width: 20px;
+}
+.fontFifteen {
+    font-size: 15px;
 }
    
 .Centered{
@@ -51,6 +115,10 @@
 }
 
 .fill{
+    height: 90%;
+    width: 90%;
+}
+.fullFill{
     height: 90%;
     width: 90%;
 }
@@ -84,6 +152,11 @@
     margin-right: 5px;
 }
 
+.interactiveColor {
+    background-color: var(--interactive-normal);
+    box-shadow: var(--input-shadow);
+}
+
 .padded {
     margin-left: 5px;
     margin-right: 5px;
@@ -108,15 +181,56 @@
 }
 
 .trackerTableStyle{
-    border-collapse: collapse;
+    border-radius: 10px;
     padding: 5px;
     width: 100%;
+    min-height: 100px;
 }
-
 .trackerTableCellStyle {
     border: 1px solid;
     border-collapse: collapse;
-    padding: 5px;
+}
+.trackerTableNameCellStyle {
+    border: 1px solid;
+    border-collapse: collapse;
+    border-bottom-left-radius: 10px;
+    padding: 0px 0px 0px 5px;
+}
+.trackerTableRemoveCellStyle {
+    border: 1px solid;
+    border-collapse: collapse;
+    border-bottom-right-radius: 10px;
+}
+.leftPaddingFive{
+    padding: 0px 0px 0px 5px;
+}
+.trackerCellButtonStyle {
+    color: var(--color-base-00);
+    background-color: transparent;
+    font-weight: bolder;
+    width: 100%;
+}
+.tenRadiusTopLeft{
+    border-top-left-radius: 10px;
+}
+.tenRadiusTopRight{
+    border-top-right-radius: 10px;
+}
+.trackerRowTableStyle {
+    margin-top: 5px;
+    border-spacing: 0px;
+}
+.trackerCellButtonFullHeight{
+    height: 55px;
+}
+.trackerCellButtonHalfHeight{
+    height: 22.5px;
+}
+.trackerCellRemoveButtonStyle {
+    text-align: center;
+    height: 55px;
+    color: var(--color-red);
+    margin-bottom: -20px;
 }
 
 .name-Cell {
@@ -125,9 +239,10 @@
 
 .verticalType {
     transform: translate(-8%) rotate(-90deg) translate(-14px) ;
-    margin: -18px;
+    margin-left: -18px;
     width: 57px;
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
 .slimButton{
