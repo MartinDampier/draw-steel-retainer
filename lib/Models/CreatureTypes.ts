@@ -1,9 +1,9 @@
 export enum CreatureTypes {
     Hero = 'Hero',
     Minion = 'Minion',
-    Band = 'Band',
+    Horde = 'Horde',
     Platoon = 'Platoon',
-    Troop = 'Troop',
+    Elite = 'Elite',
     Leader = 'Leader',
     Solo = 'Solo'
 }
