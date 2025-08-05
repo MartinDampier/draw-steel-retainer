@@ -14,7 +14,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		await this.loadSettings();
 		this.registerView(
 			INITIATIVE_VIEW,
-			(leaf) => new InitiativeView(leaf, this.creatures, this.settings.playerCharacters)
+			(leaf) => new InitiativeView(leaf, this.app, this.creatures, this.settings.playerCharacters)
 		  );
 
 		  this.addRibbonIcon('scroll-text', 'DRAW STEEL! (Initiative Tracker)', () => {
