@@ -97,9 +97,9 @@ export class InitiativeView extends ItemView {
     this.typeInput = new DropdownComponent(this.formEl)
       .addOption(CreatureTypes.Hero.toString(), CreatureTypes.Hero.toString())
       .addOption(CreatureTypes.Minion.toString(), CreatureTypes.Minion.toString())
+      .addOption(CreatureTypes.Horde.toString(), CreatureTypes.Horde.toString())
       .addOption(CreatureTypes.Platoon.toString(), CreatureTypes.Platoon.toString())
-      .addOption(CreatureTypes.Band.toString(), CreatureTypes.Band.toString())
-      .addOption(CreatureTypes.Troop.toString(), CreatureTypes.Troop.toString())
+      .addOption(CreatureTypes.Elite.toString(), CreatureTypes.Elite.toString())
       .addOption(CreatureTypes.Leader.toString(), CreatureTypes.Leader.toString())
       .addOption(CreatureTypes.Solo.toString(), CreatureTypes.Solo.toString())
       .onChange((value: string) => {
