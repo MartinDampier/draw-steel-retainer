@@ -1,4 +1,8 @@
-import { App, ButtonComponent, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
+import { 
+	App, 
+	ButtonComponent, 
+	Editor,
+	MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
 import { InitiativeView } from './Views/InitiativeTrackerView';
 import { INITIATIVE_VIEW, TableFormat, TableFlag } from 'lib/Models/Constants';
 import Creature from 'lib/Models/Creature';
@@ -75,7 +79,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 
 		} else {
 		  
-		  leaf = workspace.getRightLeaf(false);
+		  leaf = workspace.getLeaf(false);
 		  if (leaf != null)
 			await leaf.setViewState({ type: INITIATIVE_VIEW, active: true });
 		}
