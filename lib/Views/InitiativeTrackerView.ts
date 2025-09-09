@@ -4,7 +4,7 @@ import { INITIATIVE_VIEW, Red, Green, Orange, Yes, No, Fill } from 'lib/Models/C
 import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent, DropdownComponent, Modal, App } from 'obsidian';
 import { isSharedArrayBuffer } from 'util/types';
 import { CreatureTypes } from 'lib/Models/CreatureTypes';
-import { group } from 'console';
+import { Console, group } from 'console';
 import { clearScreenDown } from 'readline';
 
 export class InitiativeView extends ItemView {
@@ -519,7 +519,9 @@ export class InitiativeView extends ItemView {
   resetActed() {
     for (let i = 1; i < this.heroesTableEl.children.length; i++)
       {
-          let row =  (this.heroesTableEl.children[i] as (HTMLTableRowElement));
+          let row =  ((this.heroesTableEl.children[i] as (HTMLTableRowElement)).children[0] as HTMLTableElement).children[0].children[1];
+          console.log(row.children.length);
+          
           let button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
           let triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
           button.textContent = No;
@@ -531,7 +533,7 @@ export class InitiativeView extends ItemView {
       }
     for (let i = 1; i < this.villainsTableEl.children.length; i++)
       {
-          let row =  (this.villainsTableEl.children[i] as (HTMLTableRowElement));
+          let row =  ((this.villainsTableEl.children[i] as (HTMLTableRowElement)).children[0] as HTMLTableElement).children[0].children[1];
           let button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
           let triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
           button.textContent = No;
