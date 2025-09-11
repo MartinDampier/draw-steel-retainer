@@ -37,6 +37,9 @@
 .minthirdWidth{
     min-width: 33%;
 }
+.max50Width{
+    width: 50px;
+}
 .fullWidth{
     width: 100%;
 }

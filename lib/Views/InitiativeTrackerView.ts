@@ -316,7 +316,7 @@ export class InitiativeView extends ItemView {
 
       tempRow.createEl('td', {text: "stamina", cls: "Centered stamina-Cell trackerTableCellStyle"})
       this.updateStamina(tempRow, creature.CurrentStamina.toString(), creature.Type == CreatureTypes.Minion)
-      let buttonCell = tempRow.createEl('td', {cls: Green + " trackerTableCellStyle"});
+      let buttonCell = tempRow.createEl('td', {cls: Green + " trackerTableCellWithMaxWidthStyle max50Width"});
       let buttonComp = new ExtraButtonComponent(buttonCell);
       buttonComp.extraSettingsEl.setText(No);
       buttonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
@@ -324,7 +324,7 @@ export class InitiativeView extends ItemView {
       buttonComp.onClick( () => {
         this.changeTriggeredActionCell(tempRow, buttonComp, buttonComp.extraSettingsEl.getText() == No);
       });
-      let actedButtonCell = tempRow.createEl('td', {cls: Green + " trackerTableCellStyle"});
+      let actedButtonCell = tempRow.createEl('td', {cls: Green + " trackerTableCellWithMaxWidthStyle max50Width"});
       let actedButtonComp = new ExtraButtonComponent(actedButtonCell);
       actedButtonComp.extraSettingsEl.setText(No);
       actedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
@@ -334,7 +334,7 @@ export class InitiativeView extends ItemView {
       if (creature.Type == "Solo") {
         let secondActedButtonComp = new ExtraButtonComponent(actedButtonCell);
         secondActedButtonComp.extraSettingsEl.setText(No);
-        secondActedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
+        secondActedButtonComp.extraSettingsEl.addClass("trackerTableCellWithMaxWidthStyle");
         secondActedButtonComp.extraSettingsEl.addClass("trackerCellButtonHalfHeight");
         actedButtonComp.extraSettingsEl.addClass("trackerCellButtonHalfHeight");
         secondActedButtonComp.onClick( () => {
@@ -348,7 +348,7 @@ export class InitiativeView extends ItemView {
         actedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
         actedButtonComp.extraSettingsEl.addClass("trackerCellButtonFullHeight");
       }
-      buttonCell = tempRow.createEl('td', {cls: 'trackerTableRemoveCellStyle'});
+      buttonCell = tempRow.createEl('td', {cls: 'trackerTableRemoveCellStyle max50Width'});
       let removeButton = new ExtraButtonComponent(buttonCell);
       removeButton.extraSettingsEl.addClass("trackerCellRemoveButtonStyle");
       removeButton.extraSettingsEl.addClass("interactiveColor");
@@ -520,7 +520,6 @@ export class InitiativeView extends ItemView {
     for (let i = 1; i < this.heroesTableEl.children.length; i++)
       {
           let row =  ((this.heroesTableEl.children[i] as (HTMLTableRowElement)).children[0] as HTMLTableElement).children[0].children[1];
-          console.log(row.children.length);
           
           let button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
           let triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
