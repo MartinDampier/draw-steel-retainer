@@ -6,9 +6,16 @@
     }
     .gradient{
         background: linear-gradient(180deg,rgba(158, 158, 158, 1) 0%, rgba(194, 194, 194, 1) 50%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .bottomBorder{
         border-style: solid;
         border-color: black;
         border-width: 0px 0px 1px 0px;
+    }
+    
+    .bold{
+        font-weight: bold;
     }
 
     .cell{
@@ -18,13 +25,22 @@
     .centerAlign{
         text-align: center;
     }
+    
+    .leftAlign{
+        text-align: left;
+    }
+
+    .rightAlign{
+        text-align: right;
+    }
 
     .table{
         border-collapse: collapse;
+        width: 25%;
     }
 </style>
 
-<table class="gradient table" style="width: 400px;">
+<table class="gradient bottomBorder table">
     <tr class="simpleHeader">
         <Th class="cell" style="text-align: left; margin-left: 5px; font-size: large;">[NAME]</Th>
         <Th class="cell" style="text-align: right; margin-right: 5px;">Level [X] [ROLE] [ORG]</Th>
@@ -35,13 +51,13 @@
     </tr>
 </table>
 
-<table style="width: 400px;">
+<table class="table">
     <tr>
         <td class="centerAlign">
             <div>
                 [SIZE]
             </div>
-            <div>
+            <div class="bold">
                 Size
             </div>
         </td>
@@ -49,7 +65,7 @@
             <div>
                 [SPEED]
             </div>
-            <div>
+            <div class="bold">
                 Speed
             </div>
         </td>
@@ -57,7 +73,7 @@
             <div>
                 [STAMINA]
             </div>
-            <div>
+            <div class="bold">
                 Stamina
             </div>
         </td>
@@ -65,7 +81,7 @@
             <div>
                 [STABILITY]
             </div>
-            <div>
+            <div class="bold">
                 Stability
             </div>
         </td>
@@ -73,9 +89,29 @@
             <div>
                 [FREESTRIKE]
             </div>
-            <div>
+            <div class="bold">
                 Free Strike
             </div>
         </td>
+    </tr>
+</table>
+
+<table class="table bottomBorder">
+    <tr>
+        <td class="leftAlign" ><div class="leftAlign"><b>Immuntity: </b> [IMMUNITIES] </div></td>
+        <td class="rightAlign" ><div class="rightAlign"><b>Weakness: </b> [WEAKNESSES] </div></td>
+    </tr>
+    <tr>
+        <td class="leftAlign"><b>Movement: </b> [MOVEMENTTYPES]</td>
+    </tr>
+</table>
+
+<table class="table bottomBorder">
+    <tr>
+        <td class="centerAlign"><div>Might [MIGHT]</div></td>
+        <td class="centerAlign"><div>Agility [AGILITY]</div></td>
+        <td class="centerAlign"><div>Reason [REASON]</div></td>
+        <td class="centerAlign"><div>Intuition [INTUITION]</div></td>
+        <td class="centerAlign"><div>Presence [PRESENCE]</div></td>
     </tr>
 </table>
