@@ -4,7 +4,8 @@ import {
 	Editor,
 	MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
 import { InitiativeView } from './Views/InitiativeTrackerView';
-import { INITIATIVE_VIEW, TableFormat, TableFlag } from 'lib/Models/Constants';
+import { NegotiationView } from './Views/NegotiationTrackerView';
+import { INITIATIVE_VIEW, TableFormat, TableFlag, NEGOTIATION_VIEW } from 'lib/Models/Constants';
 import Creature from 'lib/Models/Creature';
 import {RetainerSettings, DEFAULT_SETTINGS} from 'lib/Settings'
 import { CreatureTypes } from './Models/CreatureTypes';
@@ -20,10 +21,17 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 			INITIATIVE_VIEW,
 			(leaf) => new InitiativeView(leaf, this.app, this.creatures, this.settings.playerCharacters)
 		  );
+		this.addRibbonIcon('scroll-text', 'DRAW STEEL! (Initiative Tracker)', () => {
+		this.activateView(INITIATIVE_VIEW);
+		});
 
-		  this.addRibbonIcon('scroll-text', 'DRAW STEEL! (Initiative Tracker)', () => {
-			this.activateView();
-		  });
+		this.registerView(
+			NEGOTIATION_VIEW,
+			(leaf) => new NegotiationView(leaf, this.app)
+		  );
+		this.addRibbonIcon('messages-square', 'NEGOTIATE', () => {
+		this.activateView(NEGOTIATION_VIEW);
+		});
 
 		this.addSettingTab(new RetainerSettingTab(this.app, this));
 	}
@@ -59,7 +67,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		if (creatures.length > 0)
 		{
 			this.creatures = creatures;
-			this.activateView();
+			this.activateView(INITIATIVE_VIEW);
 			this.creatures = [];
 		}
 	}
@@ -68,11 +76,11 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 
 	}
 
-	async activateView() {
+	async activateView(view: string) {
 		const { workspace } = this.app;
 	
 		let leaf: WorkspaceLeaf | null = null;
-		const leaves = workspace.getLeavesOfType(INITIATIVE_VIEW);
+		const leaves = workspace.getLeavesOfType(view);
 	
 		if (leaves.length > 0) {
 		  leaf = leaves[0];
@@ -81,7 +89,7 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		  
 		  leaf = workspace.getLeaf(false);
 		  if (leaf != null)
-			await leaf.setViewState({ type: INITIATIVE_VIEW, active: true });
+			await leaf.setViewState({ type: view, active: true });
 		}
 	
 		if (leaf != null)

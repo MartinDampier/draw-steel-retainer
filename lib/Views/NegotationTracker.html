@@ -1,0 +1,84 @@
+
+<style>
+    datalist {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 90vw;
+        writing-mode: horizontal-tb;
+    }
+    option {
+        padding: 0;
+    }
+
+    .noResize{
+        resize: none;
+    }
+
+    .bottomSpace{
+        margin: 2px;
+    }
+
+    input[type="range"] {
+        width: 90vw;
+        margin: 0;
+    }
+
+    .nintyWidth{
+        width: 90vw;
+    }
+    .columnStyle {
+        display: flex; 
+        flex-direction: column;
+    }
+
+    .centered{
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<div class="columnStyle centered">
+
+    
+    <div class="columnStyle">
+        <label>Patience</label>
+        <input type="range" id="temp" name="temp" list="markers" min="0" max="6"></input>
+        <datalist id="markers">
+            <option value="0" label="0"></option>
+            <option value="1" label="1"></option>
+            <option value="2" label="2"></option>
+            <option value="3" label="3"></option>
+            <option value="4" label="4"></option>
+            <option value="5" label="5"></option>
+            <option value="6" label="6"></option>
+        </datalist>
+    </div>
+    <div class="columnStyle">
+        <label>Interest</label>
+        <input type="range" id="temp" name="temp" list="markers2" min="0" max="6"></input>
+        <datalist id="markers2">
+            <option value="0" label="0"></option>
+            <option value="1" label="1"></option>
+            <option value="2" label="2"></option>
+            <option value="3" label="3"></option>
+            <option value="4" label="4"></option>
+            <option value="5" label="5"></option>
+            <option value="6" label="6"></option>
+        </datalist>
+    </div>
+    <br/>
+    <label>Languages</label>
+    <textarea class="nintyWidth noResize"></textarea>
+<br/>
+    <label>Motivations</label>
+    <textarea class="nintyWidth noResize bottomSpace"></textarea>
+    <textarea class="nintyWidth noResize bottomSpace"></textarea>
+<br/>
+    <label>Pitfalls</label>
+    <textarea class="nintyWidth noResize bottomSpace"></textarea>
+    <textarea class="nintyWidth noResize bottomSpace"></textarea>
+</div>

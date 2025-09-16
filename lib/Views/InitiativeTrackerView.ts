@@ -1,11 +1,7 @@
-import { createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
 import { INITIATIVE_VIEW, Red, Green, Orange, Yes, No, Fill } from 'lib/Models/Constants';
 import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent, DropdownComponent, Modal, App } from 'obsidian';
-import { isSharedArrayBuffer } from 'util/types';
 import { CreatureTypes } from 'lib/Models/CreatureTypes';
-import { Console, group } from 'console';
-import { clearScreenDown } from 'readline';
 
 export class InitiativeView extends ItemView {
   gridEl: HTMLDivElement;

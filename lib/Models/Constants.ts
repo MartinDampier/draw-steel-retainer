@@ -1,4 +1,5 @@
 export const INITIATIVE_VIEW = 'initiative-view';
+export const NEGOTIATION_VIEW = 'negotiation-view';
 export const Yes = 'Yes';
 export const No = 'No';
 export const Red = 'red';
