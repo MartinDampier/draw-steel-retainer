@@ -112,9 +112,11 @@
 }
    
 .Centered{
-    margin-right: auto;
     margin-left: auto;
+    margin-right: auto;
     text-align: center;
+    justify-content: center;
+    align-items: center;
 }
 
 .fill{
@@ -254,4 +256,31 @@
     width: 18px;
     height: 18px;
     background-color: transparent;
+}
+
+.datalist {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        writing-mode: horizontal-tb;
+    }
+.option {
+    padding: 0;
+}
+
+.noResize{
+    resize: none;
+}
+
+.range {
+    width: 100%;
+    margin: 0;
+}
+
+.nintyWidth{
+    width: 90vw;
+}
+.columnStyle {
+    display: flex; 
+    flex-direction: column;
 }
