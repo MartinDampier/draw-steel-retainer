@@ -11,6 +11,7 @@ export class InitiativeView extends ItemView {
   gridEl: HTMLDivElement;
   formEl: HTMLDivElement;
   roundEl: HTMLDivElement;
+  maliceEl: HTMLDivElement;
   draggedItemIndex: number;
   heroesTableDragIndex: number;
   villainsTableDragIndex: number;
@@ -129,26 +130,26 @@ export class InitiativeView extends ItemView {
   createRoundSection(){
     this.roundEl= this.gridEl.createDiv( {cls: "tableStyle "});
     this.setRound(1);
-    this.setMalice(0);
+    this.setMalice(1 + this.heroes.length);
   }
 
   setMalice(malice: number, div? : HTMLDivElement){
     this.malice = malice;
-    div = div ?? this.roundEl.createDiv({cls: "rightAlign maliceHeader"});
-    div.setText("Malice: " + this.malice);
-    let minusMalice = new ButtonComponent(div);
+    this.maliceEl = this.maliceEl ?? this.roundEl.createDiv({cls: "rightAlign maliceHeader"});
+    this.maliceEl.setText("Malice: " + this.malice);
+    let minusMalice = new ButtonComponent(this.maliceEl);
     minusMalice.setButtonText("-1");
     minusMalice.setClass("headerButtonLeft");
     minusMalice.onClick( () => {
       this.malice--;
-      this.setMalice(this.malice, div);
+      this.setMalice(this.malice, this.maliceEl);
     });
-    let plusMalice = new ButtonComponent(div);
+    let plusMalice = new ButtonComponent(this.maliceEl);
     plusMalice.setButtonText("+1");
     plusMalice.setClass("headerButtonLeft");
     plusMalice.onClick( () => {
       this.malice++;
-      this.setMalice(this.malice, div);
+      this.setMalice(this.malice, this.maliceEl);
     });
   }
 
@@ -222,35 +223,37 @@ export class InitiativeView extends ItemView {
   }
 
   createCreatureRow(creature: Creature = new Creature, isHero: boolean){
-      if (creature.Name == "")
+    if (creature.Name == "")
+    {
+      if (this.nameInput.getValue() == "")
       {
-        if (this.nameInput.getValue() == "")
-        {
-          return;
-        }
-        creature.Id = isHero ? (this.heroes.length + 1).toString() : (this.villains.length + 1).toString();
-        creature.Name = this.nameInput.getValue();
-        this.nameInput.setValue('');
-        creature.Type = this.typeInput.getValue() as CreatureTypes;
-        if (creature.Type == CreatureTypes.Minion)
-        {
-          creature.MinionStamina = +(this.minionStaminaInput.getValue());
-          this.minionStaminaInput.setValue("")
-          creature.MinionCount = +(this.minionCountInput.getValue());
-          this.minionCountInput.setValue("1");
-          creature.MaxStamina = creature.MinionStamina * creature.MinionCount;
-        } else {
-          creature.MaxStamina = this.staminaInput.getValue != undefined ? +this.staminaInput.getValue() : 0;
-        }
-        creature.IsHero = isHero;
-        this.staminaInput.setValue('');
+        return;
       }
-      creature.CurrentStamina = creature.MaxStamina;
-      try{
-        if (isHero)
-          this.heroes.push(creature);
-      else
+      creature.Id = isHero ? (this.heroes.length + 1).toString() : (this.villains.length + 1).toString();
+      creature.Name = this.nameInput.getValue();
+      this.nameInput.setValue('');
+      creature.Type = this.typeInput.getValue() as CreatureTypes;
+      if (creature.Type == CreatureTypes.Minion)
+      {
+        creature.MinionStamina = +(this.minionStaminaInput.getValue());
+        this.minionStaminaInput.setValue("")
+        creature.MinionCount = +(this.minionCountInput.getValue());
+        this.minionCountInput.setValue("1");
+        creature.MaxStamina = creature.MinionStamina * creature.MinionCount;
+      } else {
+        creature.MaxStamina = this.staminaInput.getValue != undefined ? +this.staminaInput.getValue() : 0;
+      }
+      creature.IsHero = isHero;
+      this.staminaInput.setValue('');
+    }
+    creature.CurrentStamina = creature.MaxStamina;
+    try{
+      if (isHero && !this.heroes.contains(creature)){
+        this.heroes.push(creature);
+      }
+      if (!isHero && !this.villains.contains(creature)){
         this.villains.push(creature);
+      }
       let row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered"}) : this.villainsTableEl.createEl('tr', {cls: "Centered"});
 
       row.draggable = true;
@@ -512,7 +515,10 @@ export class InitiativeView extends ItemView {
 
   newRound(div: HTMLDivElement)
   {
-    this.setRound(++this.round, div);
+    let round = ++this.round;
+    this.setRound(round, div);
+    let malice = this.malice + round + this.heroes.length
+    this.setMalice(malice)
     this.resetActed();
   }
 
