@@ -1,6 +1,7 @@
+import { Certificate, createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
-import { INITIATIVE_VIEW, Red, Green, Orange, Yes, No, Fill } from 'lib/Models/Constants';
-import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent, DropdownComponent, Modal, App } from 'obsidian';
+import * as cssConstants from 'lib/Models/Constants';
+import { ButtonComponent, ItemView, WorkspaceLeaf, TextComponent, ExtraButtonComponent, DropdownComponent, Modal, App } from 'obsidian';
 import { CreatureTypes } from 'lib/Models/CreatureTypes';
 import * as Behaviors from 'lib/Behaviors/TextInputBehaviors';
 
@@ -40,7 +41,7 @@ export class InitiativeView extends ItemView {
   }
 
   getViewType() {
-    return INITIATIVE_VIEW;
+    return cssConstants.INITIATIVE_VIEW;
   }
 
   getDisplayText() {
@@ -169,7 +170,7 @@ export class InitiativeView extends ItemView {
   }
   //Create a HTML Table
   createTable(isHero: boolean) {
-    let classes = "Centered" + (isHero ? " heroes" : " villains") + ' trackerTableStyle fiveTopAndBottomMargin'; 
+    let classes = cssConstants.centered + (isHero ? " heroes" : " villains") + ' trackerTableStyle fiveTopAndBottomMargin'; 
     if (isHero)
     {
       this.heroesTableEl = this.gridEl.createEl('table', {cls: classes});
@@ -181,17 +182,10 @@ export class InitiativeView extends ItemView {
     let header = isHero ? this.heroesTableEl.createEl('tr', {cls: 'tableHeaderHeight'}) : this.villainsTableEl.createEl('tr', {cls: 'tableHeaderHeight'});
     let titleCell = header.createEl('th', { cls: 'ninetyPercentWidth leftAlign'});
     isHero ? titleCell.createEl("h4", {text: "Heroes", cls: "noPaddingNoMargin"}) : titleCell.createEl("h4", {text: "Villains", cls: "noPaddingNoMargin"});
-    // header.createEl('th', {text: 'Character', cls: 'name-Cell trackerTableCellStyle'});
-    // header.createEl('th', {text: 'Stamina', cls: 'stamina-Cell trackerTableCellStyle'});
-    // header.createEl('th', {text: 'TA', title: "Triggered Action", cls: 'trackerTableCellStyle'});
-    // header.createEl('th', {text: 'Acted', cls: 'trackerTableCellStyle'});
-    
     let createButtonHeader = header.createEl('th', {cls: 'tenPercentWidth'});
     let resetButtonComp = new ExtraButtonComponent(createButtonHeader)
     resetButtonComp.extraSettingsEl.setText("Clear");
-    resetButtonComp.extraSettingsEl.addClass("headerButtonRight");
-    resetButtonComp.extraSettingsEl.addClass("fullFill");
-    resetButtonComp.extraSettingsEl.addClass("interactiveColor");
+    resetButtonComp.extraSettingsEl.addClasses(["headerButtonRight", "fullFill", "interactiveColor"]);
     if (isHero) {
       resetButtonComp.onClick( () => {
         this.clearHeroesTable();
@@ -213,7 +207,35 @@ export class InitiativeView extends ItemView {
   }
 
   createGroupRow(){
-    this.heroesTableEl.createEl('tr', {cls: "Centered"})
+    let groupRow = this.heroesTableEl.createEl('tr').createDiv();
+    groupRow.ondragover = (e) =>{
+      e.preventDefault();
+    };
+    groupRow.ondrop = (e) =>{
+      e.preventDefault();
+      let data = e.dataTransfer?.getData("text");
+      console.log("Drop: " +  data);
+    };
+    groupRow.addClasses([cssConstants.group, cssConstants.trackerTableStyle]);
+    groupRow.addClasses([cssConstants.centered, cssConstants.leftAlign])
+    groupRow.createDiv().setText("Group 1");
+    let groupTable = groupRow.createEl('table');
+  }
+
+  createCreatureObject(isHero: boolean){
+    let creature = new Creature();
+    creature.Id = isHero ? (this.heroes.length + 1).toString() : (this.villains.length + 1).toString();
+    creature.Name = this.nameInput.getValue();
+    creature.Type = this.typeInput.getValue() as CreatureTypes;
+    if (creature.Type == CreatureTypes.Minion)
+    {
+      creature.MinionStamina = +(this.minionStaminaInput.getValue());
+      creature.MinionCount = +(this.minionCountInput.getValue());
+      creature.MaxStamina = creature.MinionStamina * creature.MinionCount;
+    } else {
+      creature.MaxStamina = this.staminaInput.getValue != undefined ? + this.staminaInput.getValue() : 0;
+    }
+    creature.CurrentStamina = creature.MaxStamina;
   }
 
   createCreatureRow(creature: Creature = new Creature, isHero: boolean){
@@ -248,7 +270,7 @@ export class InitiativeView extends ItemView {
       if (!isHero && !this.villains.contains(creature)){
         this.villains.push(creature);
       }
-      let row =  isHero ? this.heroesTableEl.createEl('tr', {cls: "Centered"}) : this.villainsTableEl.createEl('tr', {cls: "Centered"});
+      let row =  isHero ? this.heroesTableEl.createEl('tr', {cls: cssConstants.centered}) : this.villainsTableEl.createEl('tr', {cls: cssConstants.centered});
 
       row.draggable = true;
       row.ondragstart = (e) => this.onHeroTableRowDragStart(e, creature);
@@ -283,7 +305,7 @@ export class InitiativeView extends ItemView {
       renameField.setValue(creature.Name);
       renameField.inputEl.hidden = true;
       renameField.inputEl.addClass("fullWidth");
-      renameField.inputEl.addClass("Centered");
+      renameField.inputEl.addClass(cssConstants.centered);
       renameField.inputEl.addClass("fontFifteen");
       
       let changeNameButton = new ExtraButtonComponent(nameRow).setIcon("pencil-line").setTooltip("Rename");
@@ -313,32 +335,32 @@ export class InitiativeView extends ItemView {
 
       tempRow.createEl('td', {text: "stamina", cls: "Centered stamina-Cell trackerTableCellStyle"})
       this.updateStamina(tempRow, creature.CurrentStamina.toString(), creature.Type == CreatureTypes.Minion)
-      let buttonCell = tempRow.createEl('td', {cls: Green + " trackerTableCellWithMaxWidthStyle max50Width"});
+      let buttonCell = tempRow.createEl('td', {cls: cssConstants.green + " trackerTableCellWithMaxWidthStyle max50Width"});
       let buttonComp = new ExtraButtonComponent(buttonCell);
-      buttonComp.extraSettingsEl.setText(No);
+      buttonComp.extraSettingsEl.setText(cssConstants.no);
       buttonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
       buttonComp.extraSettingsEl.addClass("trackerCellButtonFullHeight");
       buttonComp.onClick( () => {
-        this.changeTriggeredActionCell(tempRow, buttonComp, buttonComp.extraSettingsEl.getText() == No);
+        this.changeTriggeredActionCell(tempRow, buttonComp, buttonComp.extraSettingsEl.getText() == cssConstants.no);
       });
-      let actedButtonCell = tempRow.createEl('td', {cls: Green + " trackerTableCellWithMaxWidthStyle max50Width"});
+      let actedButtonCell = tempRow.createEl('td', {cls: cssConstants.green + " trackerTableCellWithMaxWidthStyle max50Width"});
       let actedButtonComp = new ExtraButtonComponent(actedButtonCell);
-      actedButtonComp.extraSettingsEl.setText(No);
+      actedButtonComp.extraSettingsEl.setText(cssConstants.no);
       actedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
       actedButtonComp.onClick( () => {
-        this.changeActedCell(tempRow, actedButtonComp, actedButtonComp.extraSettingsEl.getText() == No);
+        this.changeActedCell(tempRow, actedButtonComp, actedButtonComp.extraSettingsEl.getText() == cssConstants.no);
       });
       if (creature.Type == "Solo") {
         let secondActedButtonComp = new ExtraButtonComponent(actedButtonCell);
-        secondActedButtonComp.extraSettingsEl.setText(No);
+        secondActedButtonComp.extraSettingsEl.setText(cssConstants.no);
         secondActedButtonComp.extraSettingsEl.addClass("trackerTableCellWithMaxWidthStyle");
         secondActedButtonComp.extraSettingsEl.addClass("trackerCellButtonHalfHeight");
         actedButtonComp.extraSettingsEl.addClass("trackerCellButtonHalfHeight");
         secondActedButtonComp.onClick( () => {
-          this.actedButtonTwoClick(tempRow, secondActedButtonComp, secondActedButtonComp.extraSettingsEl.getText() == No);
+          this.actedButtonTwoClick(tempRow, secondActedButtonComp, secondActedButtonComp.extraSettingsEl.getText() == cssConstants.no);
         });
         actedButtonComp.onClick( () => {
-        this.actedButtonOneClick(tempRow, actedButtonComp, actedButtonComp.extraSettingsEl.getText() == No);
+        this.actedButtonOneClick(tempRow, actedButtonComp, actedButtonComp.extraSettingsEl.getText() == cssConstants.no);
       });
       } else
       {
@@ -365,7 +387,10 @@ export class InitiativeView extends ItemView {
     this.draggedItemIndex = this.heroes.indexOf(creature);
     if (event.dataTransfer != null){
       event.dataTransfer.dropEffect = "move";
-      event.dataTransfer.effectAllowed = "all";
+       
+      let jsonCreature = JSON.stringify(creature);
+      console.log(jsonCreature);
+      event.dataTransfer.setData("text", JSON.stringify(creature));
     }
   }
   
@@ -433,15 +458,15 @@ export class InitiativeView extends ItemView {
   changeActedCell(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
     if (hasActed)
     {
-      buttonComp.extraSettingsEl.setText(Yes);
-      row.children[3].addClass(Red);
-      row.children[3].removeClass(Green);
+      buttonComp.extraSettingsEl.setText(cssConstants.yes);
+      row.children[3].addClass(cssConstants.red);
+      row.children[3].removeClass(cssConstants.green);
     }
     else
     {
-      buttonComp.extraSettingsEl.setText(No);
-      row.children[3].addClass(Green);
-      row.children[3].removeClass(Red);
+      buttonComp.extraSettingsEl.setText(cssConstants.no);
+      row.children[3].addClass(cssConstants.green);
+      row.children[3].removeClass(cssConstants.red);
     }
   }
 
@@ -458,46 +483,46 @@ export class InitiativeView extends ItemView {
     
     if (hasActed)
     {
-      buttonComp.extraSettingsEl.setText(Yes);
+      buttonComp.extraSettingsEl.setText(cssConstants.yes);
       if (otherHasActed)
       {
-        row.children[3].addClass(Red);
-        row.children[3].removeClass(Orange);
+        row.children[3].addClass(cssConstants.red);
+        row.children[3].removeClass(cssConstants.orange);
       }
       else
       {
-        row.children[3].addClass(Orange);
+        row.children[3].addClass(cssConstants.orange);
       }
-      row.children[3].removeClass(Green);
+      row.children[3].removeClass(cssConstants.green);
     }
     else
     {
-      buttonComp.extraSettingsEl.setText(No);
+      buttonComp.extraSettingsEl.setText(cssConstants.no);
       if (otherHasActed)
       {
-        row.children[3].addClass(Orange);
+        row.children[3].addClass(cssConstants.orange);
       }
       else
       {
-        row.children[3].addClass(Green);
-        row.children[3].removeClass(Orange);
+        row.children[3].addClass(cssConstants.green);
+        row.children[3].removeClass(cssConstants.orange);
       }
-      row.children[3].removeClass(Red);
+      row.children[3].removeClass(cssConstants.red);
     }
   }
 
   changeTriggeredActionCell(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
     if (hasActed)
     {
-      buttonComp.extraSettingsEl.setText(Yes);
-      row.children[2].addClass(Red);
-      row.children[2].removeClass(Green);
+      buttonComp.extraSettingsEl.setText(cssConstants.yes);
+      row.children[2].addClass(cssConstants.red);
+      row.children[2].removeClass(cssConstants.green);
     }
     else
     {
-      buttonComp.extraSettingsEl.setText(No);
-      row.children[2].addClass(Green);
-      row.children[2].removeClass(Red);
+      buttonComp.extraSettingsEl.setText(cssConstants.no);
+      row.children[2].addClass(cssConstants.green);
+      row.children[2].removeClass(cssConstants.red);
     }
   }
 
@@ -517,24 +542,24 @@ export class InitiativeView extends ItemView {
           
           let button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
           let triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
-          button.textContent = No;
-          triggeredActionButton.textContent = No;
-          row.children[3].removeClass(Red);
-          row.children[2].removeClass(Red);
-          row.children[3].addClass(Green);
-          row.children[2].addClass(Green);
+          button.textContent = cssConstants.no;
+          triggeredActionButton.textContent = cssConstants.no;
+          row.children[3].removeClass(cssConstants.red);
+          row.children[2].removeClass(cssConstants.red);
+          row.children[3].addClass(cssConstants.green);
+          row.children[2].addClass(cssConstants.green);
       }
     for (let i = 1; i < this.villainsTableEl.children.length; i++)
       {
           let row =  ((this.villainsTableEl.children[i] as (HTMLTableRowElement)).children[0] as HTMLTableElement).children[0].children[1];
           let button = (row.children[2] as HTMLTableCellElement).children[0] as HTMLButtonElement;
           let triggeredActionButton = (row.children[3] as HTMLTableCellElement).children[0] as HTMLButtonElement;
-          button.textContent = No;
-          triggeredActionButton.textContent = No;
-          row.children[3].removeClass(Red);
-          row.children[2].removeClass(Red);
-          row.children[3].addClass(Green);
-          row.children[2].addClass(Green);
+          button.textContent = cssConstants.no;
+          triggeredActionButton.textContent = cssConstants.no;
+          row.children[3].removeClass(cssConstants.red);
+          row.children[2].removeClass(cssConstants.red);
+          row.children[3].addClass(cssConstants.green);
+          row.children[2].addClass(cssConstants.green);
       }
   }
 

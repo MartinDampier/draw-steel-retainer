@@ -190,7 +190,9 @@
 .heroes {
     border: 2px solid var(--color-green);
 }
-
+.group {
+    border: 2px solid var(--color-base-100);
+}
 .villains {
     border: 2px solid var(--color-red);
 }
