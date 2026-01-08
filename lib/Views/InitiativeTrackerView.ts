@@ -65,32 +65,20 @@ export class InitiativeView extends ItemView {
   async onClose() {
     // Nothing to clean up. FOR NOW
   }
-
+/***
+ * Creates the input section seen at the top of the Initiative Tracker.
+ */
   createInputSection() {
     this.formEl = this.gridEl.createDiv({cls: "fullScreen"});
 
-    this.nameInput = new TextComponent(this.formEl).setPlaceholder("Name");
-    this.nameInput.inputEl.addClass("padded-input");
-    this.nameInput.inputEl.addClass("minthirdWidth");
+    this.createTextInput(this.nameInput = new TextComponent(this.formEl), "Name", false);
+    this.createTextInput(this.staminaInput = new TextComponent(this.formEl), "Max stamina", false);
+    this.createTextInput(this.minionStaminaInput = new TextComponent(this.formEl), "Minion stamina", true);
 
-    this.staminaInput = new TextComponent(this.formEl).setPlaceholder("Max stamina");
-    this.staminaInput.inputEl.addClass("padded-input");
-    this.staminaInput.inputEl.addClass("minthirdWidth");
-    
-    this.minionStaminaInput = new TextComponent(this.formEl).setPlaceholder("Minion stamina");
-    this.minionStaminaInput.inputEl.addClass("padded-input");
-    this.minionStaminaInput.inputEl.addClass("minthirdWidth");
-    this.minionStaminaInput.inputEl.hidden = true;
-
+    let minionCount: Record<string, string> = {"1" : "1",  "2" : "2", "3" : "3", "4" : "4", "5" : "5", "6" : "6", "7" : "7", "8" : "8"};
     this.minionCountInput = new DropdownComponent(this.formEl)
-      .addOption("1", "1")
-      .addOption("2", "2")
-      .addOption("3", "3")
-      .addOption("4", "4")
-      .addOption("5", "5")
-      .addOption("6", "6")
-      .addOption("7", "7")
-      .addOption("8", "8");
+      .addOptions(minionCount);
+
     this.minionCountInput.selectEl.title = "Minion count";
     this.minionCountInput.selectEl.addClass("padded-input");
     this.minionCountInput.selectEl.hidden = true;
@@ -115,16 +103,25 @@ export class InitiativeView extends ItemView {
           this.staminaInput.inputEl.hidden = false;
         }
       });
+
     this.typeInput.selectEl.addClass("padded-input");
-    let heroButtonComp = new ButtonComponent(this.formEl);
-    heroButtonComp.setButtonText("Hero");
-    heroButtonComp.setClass("padded-input");
-    heroButtonComp.onClick( () => this.createCreatureRow(undefined, true));
-    let villainButtonComp = new ButtonComponent(this.formEl);
-    villainButtonComp.setButtonText("Villain");
-    villainButtonComp.setClass("padded-input");
-    villainButtonComp.onClick( () => this.createCreatureRow(undefined, false));
+
+    this.setInputButtonComponent(new ButtonComponent(this.formEl), "Hero",() => this.createCreatureRow(undefined, true) );
+    this.setInputButtonComponent(new ButtonComponent(this.formEl), "Villain",() => this.createCreatureRow(undefined, false) );
+    this.setInputButtonComponent(new ButtonComponent(this.formEl), "Group", () => this.createGroupRow() );
     this.createRoundSection();
+  }
+
+  setInputButtonComponent(component: ButtonComponent, text: string, callback: (evt: MouseEvent) => any){
+    component.setButtonText(text);
+    component.setClass("padded-input");
+    component.onClick(callback);
+  }
+
+   createTextInput( component: TextComponent, placeHolder: string, isHidden: boolean){
+    component.setPlaceholder(placeHolder);
+    component.inputEl.addClasses(["padded-input", "minthirdWidth"]);
+    component.inputEl.hidden = isHidden;
   }
  
   createRoundSection(){
@@ -216,10 +213,10 @@ export class InitiativeView extends ItemView {
         this.villains.forEach((creature) => this.createCreatureRow(creature, isHero));
       }
       //buttonHeader.createEl('button', { text: "Create"});
-    }
+  }
 
   createGroupRow(){
-
+    this.heroesTableEl.createEl('tr', {cls: "Centered"})
   }
 
   createCreatureRow(creature: Creature = new Creature, isHero: boolean){
@@ -369,7 +366,6 @@ export class InitiativeView extends ItemView {
       }
     }
   }
-    
 
   onHeroTableRowDragStart(event: DragEvent, creature: Creature) {
     this.draggedItemIndex = this.heroes.indexOf(creature);
@@ -462,9 +458,11 @@ export class InitiativeView extends ItemView {
   actedButtonOneClick(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
     this.soloActedButtonClickInner(row, buttonComp, hasActed, 1);
   }
+
   actedButtonTwoClick(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
     this.soloActedButtonClickInner(row, buttonComp, hasActed, 0);
   }
+
   soloActedButtonClickInner(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean, child: number){
     let otherHasActed = row.children[3].children[child].textContent == "Yes";
     
@@ -556,6 +554,7 @@ export class InitiativeView extends ItemView {
       this.heroesTableEl.children[i].remove();
     }
   }
+
   clearVillainsTable(){
     for(let i = 1; i < this.villainsTableEl.children.length; i++)
     {
