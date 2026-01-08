@@ -4,7 +4,7 @@ import {
 	Editor,
 	MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
 import { InitiativeView } from './Views/InitiativeTrackerView';
-import { INITIATIVE_VIEW, TableFormat, TableFlag } from 'lib/Models/Constants';
+import { INITIATIVE_VIEW } from 'lib/Models/Constants';
 import Creature from 'lib/Models/Creature';
 import {RetainerSettings, DEFAULT_SETTINGS} from 'lib/Settings'
 import { CreatureTypes } from './Models/CreatureTypes';
@@ -26,42 +26,6 @@ export default class ForbiddenLandsCharacterSheet extends Plugin {
 		  });
 
 		this.addSettingTab(new RetainerSettingTab(this.app, this));
-	}
-
-	importSelectionToTracker(editor: Editor){
-		if(!(editor.somethingSelected())) {
-			return;
-		}
-
-		let selection = editor.getSelection();
-		let done = false;
-		let lines: string[] = [];
-		lines = selection.split('\n');
-		let flagFound = false;
-		let creatures = [];
-		for(let i = 0; i < lines.length; i++){
-			let sample = lines[i];
-			if (sample.contains(TableFlag))
-			{
-				flagFound = true;
-				continue;
-			}
-			if (flagFound && sample.contains("|"))
-			{
-				let cells = sample.split("|");
-				let creature = new Creature();
-				creature.Name = cells[1];
-				creature.MaxStamina = +cells[2];
-				creature.Id = creatures.length.toString();
-				creatures.push(creature);
-			}
-		}
-		if (creatures.length > 0)
-		{
-			this.creatures = creatures;
-			this.activateView();
-			this.creatures = [];
-		}
 	}
 
 	onunload() {
