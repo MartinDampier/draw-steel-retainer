@@ -1,11 +1,8 @@
-import { createPublicKey } from 'crypto';
 import Creature from 'lib/Models/Creature';
 import { INITIATIVE_VIEW, Red, Green, Orange, Yes, No, Fill } from 'lib/Models/Constants';
 import { ButtonComponent, ItemView, TextAreaComponent, WorkspaceLeaf, Setting, TextComponent, ExtraButtonComponent, DropdownComponent, Modal, App } from 'obsidian';
-import { isSharedArrayBuffer } from 'util/types';
 import { CreatureTypes } from 'lib/Models/CreatureTypes';
-import { Console, group } from 'console';
-import { clearScreenDown } from 'readline';
+import * as Behaviors from 'lib/Behaviors/TextInputBehaviors';
 
 export class InitiativeView extends ItemView {
   gridEl: HTMLDivElement;
@@ -405,40 +402,73 @@ export class InitiativeView extends ItemView {
     row.remove();
   }
 
-  updateStamina(row: HTMLTableRowElement, stamina: string, isMinion: boolean){
-    try{
-      let staminaCell = row.children[1] as HTMLTableCellElement;
-      let parsedId = row.id.split(" ");
-      let maxStamina = 0;
-      let minionStamina;
-      if (parsedId != undefined) {
-        if (parsedId[0] == "Hero"){
-          maxStamina = this.heroes[+parsedId[1]].MaxStamina;
-          minionStamina = this.heroes[+parsedId[1]].MinionStamina;
-        } else {
-          maxStamina = this.villains[+parsedId[1]].MaxStamina;
-          minionStamina = this.villains[+parsedId[1]].MinionStamina;
-        }
+   updateStamina(row: HTMLTableRowElement, stamina: string, isMinion: boolean){
+    let staminaCell = row.children[1] as HTMLTableCellElement;
+    let parsedId = row.id.split(" ");
+    let maxStamina = 0;
+    let minionStamina : number | undefined = 0;
+    if (parsedId != undefined) {
+      if (parsedId[0] == "Hero"){
+        maxStamina = this.heroes[+parsedId[1]].MaxStamina;
+        minionStamina = this.heroes[+parsedId[1]].MinionStamina;
+      } else {
+        maxStamina = this.villains[+parsedId[1]].MaxStamina;
+        minionStamina = this.villains[+parsedId[1]].MinionStamina;
       }
-      staminaCell.empty();
-      let staminaDiv = staminaCell.createDiv({ cls: "tableStyle"})
-      staminaDiv.createDiv({ text: "Max: " + maxStamina, cls: "tableCell"})
-      if (isMinion)
-        staminaDiv.createDiv({ text: "[" + minionStamina + "]", cls: "tableCell", title: "Per Minion"})
-      staminaDiv.createDiv({ text: "Current: " + stamina, cls: "tableCell"})
-      staminaCell.createEl('br');
-      new ButtonComponent(staminaCell).setButtonText("-5").onClick(() => {this.updateStamina(row, (+stamina - 5).toString(), isMinion)}).setClass('slimButton');
-      new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)}).setClass('slimButton');
-      new ButtonComponent(staminaCell).setButtonText("+1").onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)}).setClass('slimButton');
-      new ButtonComponent(staminaCell).setButtonText("+5").onClick(() => {this.updateStamina(row, (+stamina + 5).toString(), isMinion)}).setClass('slimButton');
     }
-    catch(e)
+    staminaCell.empty();
+    let staminaDiv = staminaCell.createDiv({ cls: "tableStyle"});
+    let header = staminaDiv.createEl('tr');
+    if (isMinion)
     {
-      let result = (e as Error).message;
-      //console.log("ERROR:");
-      //console.log(result);
+      header.createEl('th', {text: ` Max: ${maxStamina} (${minionStamina} per minion)`})
     }
-  }
+    else
+    {
+      header.createEl('th', {text: ` Max: ${maxStamina}`})
+    }
+    let bodyCell = staminaDiv.createEl('tr').createEl('td').createDiv({cls:"centered contents"});
+    new ButtonComponent(bodyCell).setButtonText('-1').onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)});
+    let staminaInput = new TextComponent(bodyCell) ;
+    staminaInput.inputEl.addClasses(['centerText', 'max60Width']);
+    staminaInput.setValue(stamina.toString()).inputEl.onkeydown = Behaviors.NumbersOnly;
+    new ButtonComponent(bodyCell).setButtonText('+1').onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)});
+   }
+
+  // updateStamina(row: HTMLTableRowElement, stamina: string, isMinion: boolean){
+  //   try{
+  //     let staminaCell = row.children[1] as HTMLTableCellElement;
+  //     let parsedId = row.id.split(" ");
+  //     let maxStamina = 0;
+  //     let minionStamina;
+  //     if (parsedId != undefined) {
+  //       if (parsedId[0] == "Hero"){
+  //         maxStamina = this.heroes[+parsedId[1]].MaxStamina;
+  //         minionStamina = this.heroes[+parsedId[1]].MinionStamina;
+  //       } else {
+  //         maxStamina = this.villains[+parsedId[1]].MaxStamina;
+  //         minionStamina = this.villains[+parsedId[1]].MinionStamina;
+  //       }
+  //     }
+  //     staminaCell.empty();
+  //     let staminaDiv = staminaCell.createDiv({ cls: "tableStyle"})
+  //     staminaDiv.createDiv({ text: "Max: " + maxStamina, cls: "tableCell"})
+  //     if (isMinion)
+  //       staminaDiv.createDiv({ text: "[" + minionStamina + "]", cls: "tableCell", title: "Per Minion"})
+  //     staminaDiv.createDiv({ text: "Current: " + stamina, cls: "tableCell"})
+  //     staminaCell.createEl('br');
+  //     new ButtonComponent(staminaCell).setButtonText("-5").onClick(() => {this.updateStamina(row, (+stamina - 5).toString(), isMinion)}).setClass('slimButton');
+  //     new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)}).setClass('slimButton');
+  //     new ButtonComponent(staminaCell).setButtonText("+1").onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)}).setClass('slimButton');
+  //     new ButtonComponent(staminaCell).setButtonText("+5").onClick(() => {this.updateStamina(row, (+stamina + 5).toString(), isMinion)}).setClass('slimButton');
+  //   }
+  //   catch(e)
+  //   {
+  //     let result = (e as Error).message;
+  //     //console.log("ERROR:");
+  //     //console.log(result);
+  //   }
+  // }
 
   changeActedCell(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
     if (hasActed)

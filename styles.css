@@ -40,12 +40,24 @@
 .max50Width{
     width: 50px;
 }
+.max60Width{
+    width: 60px;
+}
 .fullWidth{
     width: 100%;
 }
 .tableHeaderHeight {
     height: 30px;
     display: flex;
+}
+.flex{
+    display: flex;
+}
+.contents{
+    display: contents;
+}
+.centerText {
+    text-align: center;
 }
 .rowHeight {
     height: 70px;
