@@ -105,7 +105,7 @@ export class InitiativeView extends ItemView {
 
     this.setInputButtonComponent(new ButtonComponent(this.formEl), "Hero",() => this.createCreatureRow(undefined, true) );
     this.setInputButtonComponent(new ButtonComponent(this.formEl), "Villain",() => this.createCreatureRow(undefined, false) );
-    this.setInputButtonComponent(new ButtonComponent(this.formEl), "Group", () => this.createGroupRow() );
+    //this.setInputButtonComponent(new ButtonComponent(this.formEl), "Group", () => this.createGroupRow() );
     this.createRoundSection();
   }
 
@@ -357,16 +357,12 @@ export class InitiativeView extends ItemView {
     {
       if (e instanceof Error) 
       {
-        //debug
-        //console.log(e.message);
-        //console.log(e.name);
       }
     }
   }
 
   onHeroTableRowDragStart(event: DragEvent, creature: Creature) {
     this.draggedItemIndex = this.heroes.indexOf(creature);
-    //console.log(this.heroes.indexOf(creature));
     if (event.dataTransfer != null){
       event.dataTransfer.dropEffect = "move";
       event.dataTransfer.effectAllowed = "all";
@@ -376,13 +372,11 @@ export class InitiativeView extends ItemView {
   onHeroTableRowDragEnter(event: DragEvent, index: number){
     if (event.dataTransfer != null){
       this.heroesTableDragIndex = index
-      //console.log(this.heroesTableDragIndex);
     }
   }
 
   onHeroTableRowDragEnd(event: DragEvent) {
     //console.log("END");
-    
   }
 
   onHeroTableRowDrop(event: DragEvent, creature: Creature){
@@ -402,7 +396,7 @@ export class InitiativeView extends ItemView {
     row.remove();
   }
 
-   updateStamina(row: HTMLTableRowElement, stamina: string, isMinion: boolean){
+  updateStamina(row: HTMLTableRowElement, stamina: string, isMinion: boolean){
     let staminaCell = row.children[1] as HTMLTableCellElement;
     let parsedId = row.id.split(" ");
     let maxStamina = 0;
@@ -435,40 +429,6 @@ export class InitiativeView extends ItemView {
     new ButtonComponent(bodyCell).setButtonText('+1').onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)});
    }
 
-  // updateStamina(row: HTMLTableRowElement, stamina: string, isMinion: boolean){
-  //   try{
-  //     let staminaCell = row.children[1] as HTMLTableCellElement;
-  //     let parsedId = row.id.split(" ");
-  //     let maxStamina = 0;
-  //     let minionStamina;
-  //     if (parsedId != undefined) {
-  //       if (parsedId[0] == "Hero"){
-  //         maxStamina = this.heroes[+parsedId[1]].MaxStamina;
-  //         minionStamina = this.heroes[+parsedId[1]].MinionStamina;
-  //       } else {
-  //         maxStamina = this.villains[+parsedId[1]].MaxStamina;
-  //         minionStamina = this.villains[+parsedId[1]].MinionStamina;
-  //       }
-  //     }
-  //     staminaCell.empty();
-  //     let staminaDiv = staminaCell.createDiv({ cls: "tableStyle"})
-  //     staminaDiv.createDiv({ text: "Max: " + maxStamina, cls: "tableCell"})
-  //     if (isMinion)
-  //       staminaDiv.createDiv({ text: "[" + minionStamina + "]", cls: "tableCell", title: "Per Minion"})
-  //     staminaDiv.createDiv({ text: "Current: " + stamina, cls: "tableCell"})
-  //     staminaCell.createEl('br');
-  //     new ButtonComponent(staminaCell).setButtonText("-5").onClick(() => {this.updateStamina(row, (+stamina - 5).toString(), isMinion)}).setClass('slimButton');
-  //     new ButtonComponent(staminaCell).setButtonText("-1").onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)}).setClass('slimButton');
-  //     new ButtonComponent(staminaCell).setButtonText("+1").onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)}).setClass('slimButton');
-  //     new ButtonComponent(staminaCell).setButtonText("+5").onClick(() => {this.updateStamina(row, (+stamina + 5).toString(), isMinion)}).setClass('slimButton');
-  //   }
-  //   catch(e)
-  //   {
-  //     let result = (e as Error).message;
-  //     //console.log("ERROR:");
-  //     //console.log(result);
-  //   }
-  // }
 
   changeActedCell(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
     if (hasActed)
