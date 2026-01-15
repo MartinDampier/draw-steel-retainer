@@ -213,11 +213,7 @@ export class InitiativeView extends ItemView {
     groupRow.ondragover = (e) =>{
       e.preventDefault();
     };
-    groupRow.ondrop = (e) =>{
-      e.preventDefault();
-      let data = e.dataTransfer?.getData("text");
-      console.log("Drop: " +  data);
-    };
+    groupRow.ondrop = this.groupRowDrop;
     let groupTable = groupRow.createEl('table');
     groupTable.addClasses([cssConstants.group, cssConstants.trackerRowTableStyle, cssConstants.centered, cssConstants.leftAlign, cssConstants.fullScreen]);
     let groupHeader = groupTable.createEl('tr', {cls: `${cssConstants.groupHeader}`});
@@ -228,6 +224,12 @@ export class InitiativeView extends ItemView {
     groupTable.createEl('tr')
 
   }
+
+  groupRowDrop(e: DragEvent){
+      e.preventDefault();
+      let data = e.dataTransfer?.getData("text");
+      JSON.parse()
+  };
 
   createCreatureObject(isHero: boolean){
     let creature = new Creature();
