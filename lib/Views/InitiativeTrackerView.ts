@@ -6,6 +6,7 @@ import { CreatureTypes } from 'lib/Models/CreatureTypes';
 import * as Behaviors from 'lib/Behaviors/TextInputBehaviors';
 
 export class InitiativeView extends ItemView {
+  app: App;
   gridEl: HTMLDivElement;
   formEl: HTMLDivElement;
   roundEl: HTMLDivElement;
@@ -25,7 +26,6 @@ export class InitiativeView extends ItemView {
   buttons: ButtonComponent[] = [];
   round: number = 1;
   malice: number;
-  app: App;
 
   constructor(leaf: WorkspaceLeaf, app: App, villains?: Creature[], heroes?: Creature[]) {
     super(leaf);
@@ -106,7 +106,6 @@ export class InitiativeView extends ItemView {
 
     this.setInputButtonComponent(new ButtonComponent(this.formEl), "Hero",() => this.createCreatureRow(undefined, true) );
     this.setInputButtonComponent(new ButtonComponent(this.formEl), "Villain",() => this.createCreatureRow(undefined, false) );
-    //this.setInputButtonComponent(new ButtonComponent(this.formEl), "Group", () => this.createGroupRow() );
     this.createRoundSection();
   }
 
@@ -180,9 +179,13 @@ export class InitiativeView extends ItemView {
       this.villainsTableEl = this.gridEl.createEl('table', {cls: classes});
     }
     let header = isHero ? this.heroesTableEl.createEl('tr', {cls: 'tableHeaderHeight'}) : this.villainsTableEl.createEl('tr', {cls: 'tableHeaderHeight'});
-    let titleCell = header.createEl('th', { cls: 'ninetyPercentWidth leftAlign'});
+    let titleCell = header.createEl('th', { cls: `${cssConstants.eightyPercentWidth} leftAlign`});
     isHero ? titleCell.createEl("h4", {text: "Heroes", cls: "noPaddingNoMargin"}) : titleCell.createEl("h4", {text: "Villains", cls: "noPaddingNoMargin"});
-    let createButtonHeader = header.createEl('th', {cls: 'tenPercentWidth'});
+    let createButtonHeader = header.createEl('th', {cls: `${cssConstants.twentyPercentWidth} ${cssConstants.flex}`});
+    let createGroupButton = new ExtraButtonComponent(createButtonHeader)
+    createGroupButton.onClick(() => this.createGroupRow(isHero ? this.heroesTableEl : this.villainsTableEl));
+    createGroupButton.extraSettingsEl.setText("Group");
+    createGroupButton.extraSettingsEl.addClasses(["headerButtonRight", "fullFill", "interactiveColor"]);
     let resetButtonComp = new ExtraButtonComponent(createButtonHeader)
     resetButtonComp.extraSettingsEl.setText("Clear");
     resetButtonComp.extraSettingsEl.addClasses(["headerButtonRight", "fullFill", "interactiveColor"]);
@@ -203,11 +206,10 @@ export class InitiativeView extends ItemView {
       else if (!isHero && this.villains.length > -1){
         this.villains.forEach((creature) => this.createCreatureRow(creature, isHero));
       }
-      //buttonHeader.createEl('button', { text: "Create"});
   }
 
-  createGroupRow(){
-    let groupRow = this.heroesTableEl.createEl('tr').createDiv();
+  createGroupRow(table: HTMLDivElement){
+    let groupRow = table.createEl('tr').createDiv();
     groupRow.ondragover = (e) =>{
       e.preventDefault();
     };
@@ -216,10 +218,15 @@ export class InitiativeView extends ItemView {
       let data = e.dataTransfer?.getData("text");
       console.log("Drop: " +  data);
     };
-    groupRow.addClasses([cssConstants.group, cssConstants.trackerTableStyle]);
-    groupRow.addClasses([cssConstants.centered, cssConstants.leftAlign])
-    groupRow.createDiv().setText("Group 1");
     let groupTable = groupRow.createEl('table');
+    groupTable.addClasses([cssConstants.group, cssConstants.trackerRowTableStyle, cssConstants.centered, cssConstants.leftAlign, cssConstants.fullScreen]);
+    let groupHeader = groupTable.createEl('tr', {cls: `${cssConstants.groupHeader}`});
+    groupHeader.createEl('th', {text: 'Group', cls: `${cssConstants.paddingLeft5} ninetyPercentWidth`});
+    var actButton = new ExtraButtonComponent(groupHeader.createEl('th'));
+    actButton.extraSettingsEl.setText('ACT');
+    actButton.extraSettingsEl.addClasses(['.tenPercentWidth', 'headerButtonRight', cssConstants.height25])
+    groupTable.createEl('tr')
+
   }
 
   createCreatureObject(isHero: boolean){
