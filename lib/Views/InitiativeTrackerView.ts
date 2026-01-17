@@ -182,10 +182,10 @@ export class InitiativeView extends ItemView {
     let titleCell = header.createEl('th', { cls: `${cssConstants.eightyPercentWidth} leftAlign`});
     isHero ? titleCell.createEl("h4", {text: "Heroes", cls: "noPaddingNoMargin"}) : titleCell.createEl("h4", {text: "Villains", cls: "noPaddingNoMargin"});
     let createButtonHeader = header.createEl('th', {cls: `${cssConstants.twentyPercentWidth} ${cssConstants.flex}`});
-    let createGroupButton = new ExtraButtonComponent(createButtonHeader)
-    createGroupButton.onClick(() => this.createGroupRow(isHero ? this.heroesTableEl : this.villainsTableEl));
-    createGroupButton.extraSettingsEl.setText("Group");
-    createGroupButton.extraSettingsEl.addClasses(["headerButtonRight", "fullFill", "interactiveColor"]);
+    // let createGroupButton = new ExtraButtonComponent(createButtonHeader)
+    // createGroupButton.onClick(() => this.createGroupRow(isHero ? this.heroesTableEl : this.villainsTableEl));
+    // createGroupButton.extraSettingsEl.setText("Group");
+    // createGroupButton.extraSettingsEl.addClasses(["headerButtonRight", "fullFill", "interactiveColor"]);
     let resetButtonComp = new ExtraButtonComponent(createButtonHeader)
     resetButtonComp.extraSettingsEl.setText("Clear");
     resetButtonComp.extraSettingsEl.addClasses(["headerButtonRight", "fullFill", "interactiveColor"]);
