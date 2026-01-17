@@ -1,6 +1,6 @@
 {
 	"name": "draw-steel-retainer",
-	"version": "1.0.18",
+	"version": "1.0.19",
 	"description": "This plugin creates a initiative tracker that can be used for the MCDM rpg Draw Steel.",
 	"main": "main.js",
 	"scripts": {
@@ -20,5 +20,8 @@
 		"obsidian": "latest",
 		"tslib": "2.4.0",
 		"typescript": "4.7.4"
+	},
+	"dependencies": {
+		"debug": "^4.4.3"
 	}
 }
