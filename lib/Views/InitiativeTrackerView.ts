@@ -228,7 +228,12 @@ export class InitiativeView extends ItemView {
   groupRowDrop(e: DragEvent){
       e.preventDefault();
       let data = e.dataTransfer?.getData("text");
-      JSON.parse()
+      let creature: Creature ;
+      if (data === "String")
+      {
+        creature = JSON.parse(data);
+        this.createCreatureRow(creature, creature.IsHero)
+      }
   };
 
   createCreatureObject(isHero: boolean){
@@ -458,6 +463,7 @@ export class InitiativeView extends ItemView {
     let bodyCell = staminaDiv.createEl('tr').createEl('td').createDiv({cls:"centered contents"});
     new ButtonComponent(bodyCell).setButtonText('-1').onClick(() => {this.updateStamina(row, (+stamina - 1).toString(), isMinion)});
     let staminaInput = new TextComponent(bodyCell) ;
+    staminaInput.onChange((value: string) => {stamina = value})
     staminaInput.inputEl.addClasses(['centerText', 'max60Width']);
     staminaInput.setValue(stamina.toString()).inputEl.onkeydown = Behaviors.NumbersOnly;
     new ButtonComponent(bodyCell).setButtonText('+1').onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)});
