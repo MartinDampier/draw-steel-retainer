@@ -104,8 +104,8 @@ export class InitiativeView extends ItemView {
 
     this.typeInput.selectEl.addClass("padded-input");
 
-    this.setInputButtonComponent(new ButtonComponent(this.formEl), "Hero",() => this.createCreatureRow(undefined, true) );
-    this.setInputButtonComponent(new ButtonComponent(this.formEl), "Villain",() => this.createCreatureRow(undefined, false) );
+    this.setInputButtonComponent(new ButtonComponent(this.formEl), "Hero",() => this.createCreatureRow(this.heroesTableEl, undefined, true) );
+    this.setInputButtonComponent(new ButtonComponent(this.formEl), "Villain",() => this.createCreatureRow(this.villainsTableEl, undefined, false) );
     this.createRoundSection();
   }
 
@@ -182,10 +182,10 @@ export class InitiativeView extends ItemView {
     let titleCell = header.createEl('th', { cls: `${cssConstants.eightyPercentWidth} leftAlign`});
     isHero ? titleCell.createEl("h4", {text: "Heroes", cls: "noPaddingNoMargin"}) : titleCell.createEl("h4", {text: "Villains", cls: "noPaddingNoMargin"});
     let createButtonHeader = header.createEl('th', {cls: `${cssConstants.twentyPercentWidth} ${cssConstants.flex}`});
-    // let createGroupButton = new ExtraButtonComponent(createButtonHeader)
-    // createGroupButton.onClick(() => this.createGroupRow(isHero ? this.heroesTableEl : this.villainsTableEl));
-    // createGroupButton.extraSettingsEl.setText("Group");
-    // createGroupButton.extraSettingsEl.addClasses(["headerButtonRight", "fullFill", "interactiveColor"]);
+    let createGroupButton = new ExtraButtonComponent(createButtonHeader)
+    createGroupButton.onClick(() => this.createGroupRow(isHero ? this.heroesTableEl : this.villainsTableEl));
+    createGroupButton.extraSettingsEl.setText("Group");
+    createGroupButton.extraSettingsEl.addClasses(["headerButtonRight", "fullFill", "interactiveColor"]);
     let resetButtonComp = new ExtraButtonComponent(createButtonHeader)
     resetButtonComp.extraSettingsEl.setText("Clear");
     resetButtonComp.extraSettingsEl.addClasses(["headerButtonRight", "fullFill", "interactiveColor"]);
@@ -201,10 +201,10 @@ export class InitiativeView extends ItemView {
     }
     if (isHero && this.heroes.length > -1)
       {
-        this.heroes.forEach((creature) => this.createCreatureRow(creature, isHero));
+        this.heroes.forEach((creature) => this.createCreatureRow(this.heroesTableEl, creature, isHero));
       }
       else if (!isHero && this.villains.length > -1){
-        this.villains.forEach((creature) => this.createCreatureRow(creature, isHero));
+        this.villains.forEach((creature) => this.createCreatureRow(this.villainsTableEl, creature, isHero));
       }
   }
 
@@ -213,7 +213,7 @@ export class InitiativeView extends ItemView {
     groupRow.ondragover = (e) =>{
       e.preventDefault();
     };
-    groupRow.ondrop = this.groupRowDrop;
+    groupRow.ondrop = (ev) =>{ this.groupRowDrop(ev, this, groupTable) };
     let groupTable = groupRow.createEl('table');
     groupTable.addClasses([cssConstants.group, cssConstants.trackerRowTableStyle, cssConstants.centered, cssConstants.leftAlign, cssConstants.fullScreen]);
     let groupHeader = groupTable.createEl('tr', {cls: `${cssConstants.groupHeader}`});
@@ -225,14 +225,15 @@ export class InitiativeView extends ItemView {
 
   }
 
-  groupRowDrop(e: DragEvent){
+  groupRowDrop(e: DragEvent, context: InitiativeView, table: HTMLTableElement){
       e.preventDefault();
       let data = e.dataTransfer?.getData("text");
       let creature: Creature ;
-      if (data === "String")
+      if (data !== undefined)
       {
         creature = JSON.parse(data);
-        this.createCreatureRow(creature, creature.IsHero)
+        context.createCreatureRow(table, creature, creature.IsHero)
+        context.removeCreature(creature);
       }
   };
 
@@ -252,14 +253,14 @@ export class InitiativeView extends ItemView {
     creature.CurrentStamina = creature.MaxStamina;
   }
 
-  createCreatureRow(creature: Creature = new Creature, isHero: boolean){
+  createCreatureRow( table: HTMLDivElement, creature: Creature = new Creature, isHero: boolean){
     if (creature.Name == "")
     {
       if (this.nameInput.getValue() == "")
       {
         return;
       }
-      creature.Id = isHero ? (this.heroes.length + 1).toString() : (this.villains.length + 1).toString();
+      creature.Id = isHero ? (this.heroes.length).toString() : (this.villains.length).toString();
       creature.Name = this.nameInput.getValue();
       this.nameInput.setValue('');
       creature.Type = this.typeInput.getValue() as CreatureTypes;
@@ -284,7 +285,7 @@ export class InitiativeView extends ItemView {
       if (!isHero && !this.villains.contains(creature)){
         this.villains.push(creature);
       }
-      let row =  isHero ? this.heroesTableEl.createEl('tr', {cls: cssConstants.centered}) : this.villainsTableEl.createEl('tr', {cls: cssConstants.centered});
+      let row =  table.createEl('tr', {cls: cssConstants.centered});
 
       row.draggable = true;
       row.ondragstart = (e) => this.onHeroTableRowDragStart(e, creature);
@@ -435,6 +436,18 @@ export class InitiativeView extends ItemView {
     row.remove();
   }
 
+  removeCreature(creature: Creature){
+    for(let i = 0; i < this.heroesTableEl.children.length; i++)
+    {
+      if ( this.heroesTableEl.children[i].id == `Hero ${creature.Id}`)
+      {
+        this.heroesTableEl.children[i].remove();
+        console.log(`Found the item`);
+
+      }
+    }
+  }
+
   updateStamina(row: HTMLTableRowElement, stamina: string, isMinion: boolean){
     let staminaCell = row.children[1] as HTMLTableCellElement;
     let parsedId = row.id.split(" ");
@@ -468,7 +481,6 @@ export class InitiativeView extends ItemView {
     staminaInput.setValue(stamina.toString()).inputEl.onkeydown = Behaviors.NumbersOnly;
     new ButtonComponent(bodyCell).setButtonText('+1').onClick(() => {this.updateStamina(row, (+stamina + 1).toString(), isMinion)});
    }
-
 
   changeActedCell(row : HTMLTableRowElement, buttonComp : ExtraButtonComponent, hasActed : boolean) {
     if (hasActed)
@@ -607,13 +619,11 @@ export class InitiativeView extends ItemView {
     renameField.hidden = !renameField.hidden;
     if(nameField.classList.contains("hideStyle")) {
       nameField.removeClass("hideStyle");
-      nameField.addClass("fullWidth");
-      nameField.addClass("tableCell");
+      nameField.addClasses(["fullWidth", "tableCell"]);
     }
     else {
       nameField.addClass("hideStyle");
-      nameField.removeClass("fullWidth");
-      nameField.removeClass("tableCell");
+      nameField.removeClasses(["fullWidth", "tableCell"]);
     }
     if (!renameField.hidden)
       document.getElementById(id)?.focus();
