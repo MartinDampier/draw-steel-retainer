@@ -4,6 +4,7 @@ import * as cssConstants from 'lib/Models/Constants';
 import { ButtonComponent, ItemView, WorkspaceLeaf, TextComponent, ExtraButtonComponent, DropdownComponent, Modal, App } from 'obsidian';
 import { CreatureTypes } from 'lib/Models/CreatureTypes';
 import * as Behaviors from 'lib/Behaviors/TextInputBehaviors';
+import { groupEnd } from 'console';
 
 export class InitiativeView extends ItemView {
   app: App;
@@ -217,10 +218,15 @@ export class InitiativeView extends ItemView {
     let groupTable = groupRow.createEl('table');
     groupTable.addClasses([cssConstants.group, cssConstants.trackerRowTableStyle, cssConstants.centered, cssConstants.leftAlign, cssConstants.fullScreen]);
     let groupHeader = groupTable.createEl('tr', {cls: `${cssConstants.groupHeader}`});
-    groupHeader.createEl('th', {text: 'Group', cls: `${cssConstants.paddingLeft5} ninetyPercentWidth`});
-    var actButton = new ExtraButtonComponent(groupHeader.createEl('th'));
+    groupHeader.createEl('th', {text: 'Group', cls: `${cssConstants.paddingLeft5} ${cssConstants.eightyPercentWidth}}`});
+    var actButton = new ExtraButtonComponent(groupHeader.createEl('th', { cls: cssConstants.tenPercentWidth}));
     actButton.extraSettingsEl.setText('ACT');
-    actButton.extraSettingsEl.addClasses(['.tenPercentWidth', 'headerButtonRight', cssConstants.height25])
+    actButton.extraSettingsEl.addClasses(['.tenPercentWidth', 'headerButtonRight', cssConstants.height25, 'interactiveColor'])
+
+    var removeButton = new ExtraButtonComponent(groupHeader.createEl('th', { cls: cssConstants.tenPercentWidth}));
+    removeButton.extraSettingsEl.setText("Remove");
+    removeButton.extraSettingsEl.addClasses(['.tenPercentWidth', 'headerButtonRight', cssConstants.height25, 'interactiveColor'])
+    removeButton.onClick
     groupTable.createEl('tr')
 
   }
