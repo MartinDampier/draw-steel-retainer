@@ -1,4 +1,6 @@
 import { CreatureTypes } from "lib/Models/CreatureTypes";
+import { InitiativeView } from "lib/Views/InitiativeTrackerView";
+import { ExtraButtonComponent } from "obsidian";
 
 export default class Creature{
     Id: string;
@@ -10,6 +12,10 @@ export default class Creature{
     Type?: CreatureTypes;
     HasActed: boolean;
     IsHero: boolean;
+
+    Row: HTMLTableRowElement;
+    ActButton: ExtraButtonComponent;
+    SoloActButton: ExtraButtonComponent;
 
     constructor() {
         this.Id = "";

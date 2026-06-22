@@ -16,6 +16,8 @@ export class InitiativeView extends ItemView {
   heroesTableDragIndex: number;
   villainsTableDragIndex: number;
   heroesTableEl: HTMLDivElement;
+  heroesTableGroupCount: number = 0;
+  villainTableGroupCount: number = 0;
   villainsTableEl: HTMLDivElement;
   nameInput: TextComponent;
   staminaInput: TextComponent;
@@ -26,7 +28,7 @@ export class InitiativeView extends ItemView {
   heroes: Creature[] = [];
   buttons: ButtonComponent[] = [];
   round: number = 1;
-  malice: number;
+  malice: number = 0;
 
   constructor(leaf: WorkspaceLeaf, app: App, villains?: Creature[], heroes?: Creature[]) {
     super(leaf);
@@ -136,15 +138,15 @@ export class InitiativeView extends ItemView {
     minusMalice.setButtonText("-1");
     minusMalice.setClass("headerButtonLeft");
     minusMalice.onClick( () => {
-      this.malice--;
-      this.setMalice(this.malice, this.maliceEl);
+      let val = this.malice--;
+      this.setMalice(val, this.maliceEl);
     });
     let plusMalice = new ButtonComponent(this.maliceEl);
     plusMalice.setButtonText("+1");
     plusMalice.setClass("headerButtonLeft");
     plusMalice.onClick( () => {
-      this.malice++;
-      this.setMalice(this.malice, this.maliceEl);
+      let val = this.malice++;
+      this.setMalice(val, this.maliceEl);
     });
   }
 
@@ -210,7 +212,13 @@ export class InitiativeView extends ItemView {
   }
 
   createGroupRow(table: HTMLDivElement){
-    let groupRow = table.createEl('tr').createDiv();
+
+    let groupName = 'Group'
+    if (table == this.heroesTableEl){ this.heroesTableGroupCount++; groupName += ` ${this.heroesTableGroupCount}`; }
+    if (table == this.villainsTableEl){ this.villainTableGroupCount++;  groupName += ` ${this.villainTableGroupCount}`; }
+
+    let row = table.createEl('tr');
+    let groupRow = row.createDiv();
     groupRow.ondragover = (e) =>{
       e.preventDefault();
     };
@@ -218,15 +226,21 @@ export class InitiativeView extends ItemView {
     let groupTable = groupRow.createEl('table');
     groupTable.addClasses([cssConstants.group, cssConstants.trackerRowTableStyle, cssConstants.centered, cssConstants.leftAlign, cssConstants.fullScreen]);
     let groupHeader = groupTable.createEl('tr', {cls: `${cssConstants.groupHeader}`});
-    groupHeader.createEl('th', {text: 'Group', cls: `${cssConstants.paddingLeft5} ${cssConstants.eightyPercentWidth}}`});
+    groupHeader.createEl('th', {text: groupName, cls: `${cssConstants.paddingLeft5} ${cssConstants.eightyPercentWidth}}`});
     var actButton = new ExtraButtonComponent(groupHeader.createEl('th', { cls: cssConstants.tenPercentWidth}));
     actButton.extraSettingsEl.setText('ACT');
     actButton.extraSettingsEl.addClasses(['.tenPercentWidth', 'headerButtonRight', cssConstants.height25, 'interactiveColor'])
+    //actButton.onClick = () => {};
 
     var removeButton = new ExtraButtonComponent(groupHeader.createEl('th', { cls: cssConstants.tenPercentWidth}));
     removeButton.extraSettingsEl.setText("Remove");
     removeButton.extraSettingsEl.addClasses(['.tenPercentWidth', 'headerButtonRight', cssConstants.height25, 'interactiveColor'])
-    removeButton.onClick
+    removeButton.onClick(() => 
+      {
+        if (table == this.heroesTableEl){ this.heroesTableGroupCount-- }
+        if (table == this.villainsTableEl){ this.villainTableGroupCount-- }   
+        this.removeRow(row) 
+      })
     groupTable.createEl('tr')
 
   }
@@ -309,9 +323,9 @@ export class InitiativeView extends ItemView {
       tempHeader.createEl('th' , {text: 'Acted', cls: 'trackerTableCellStyle'});
       tempHeader.createEl('th' , {text: '', cls: 'trackerTableCellStyle tenRadiusTopRight'});
 
-      let tempRow = tempTable.createEl('tr');
-      tempRow.id = row.id;
-      let nameCell = tempRow.createEl('td', {cls: "Centered name-Cell trackerTableNameCellStyle"});
+      creature.Row = tempTable.createEl('tr');
+      creature.Row.id = row.id;
+      let nameCell = creature.Row.createEl('td', {cls: "Centered name-Cell trackerTableNameCellStyle"});
       let nameTable =  nameCell.createDiv({cls: "tableStyle"});
 
       let nameRow = nameTable.createDiv({cls: "tableRowStyle"});
@@ -354,41 +368,41 @@ export class InitiativeView extends ItemView {
       let button9 = new ExtraButtonComponent(nameCellDiv).setIcon("heart-crack").setTooltip("Weakened"); //Weakened
       button9.onClick( () => this.toggleColors(button9) )
 
-      tempRow.createEl('td', {text: "stamina", cls: "Centered stamina-Cell trackerTableCellStyle"})
-      this.updateStamina(tempRow, creature.CurrentStamina.toString(), creature.Type == CreatureTypes.Minion)
-      let buttonCell = tempRow.createEl('td', {cls: cssConstants.green + " trackerTableCellWithMaxWidthStyle max50Width"});
+      creature.Row.createEl('td', {text: "stamina", cls: "Centered stamina-Cell trackerTableCellStyle"})
+      this.updateStamina(creature.Row, creature.CurrentStamina.toString(), creature.Type == CreatureTypes.Minion)
+      let buttonCell = creature.Row.createEl('td', {cls: cssConstants.green + " trackerTableCellWithMaxWidthStyle max50Width"});
       let buttonComp = new ExtraButtonComponent(buttonCell);
       buttonComp.extraSettingsEl.setText(cssConstants.no);
       buttonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
       buttonComp.extraSettingsEl.addClass("trackerCellButtonFullHeight");
       buttonComp.onClick( () => {
-        this.changeTriggeredActionCell(tempRow, buttonComp, buttonComp.extraSettingsEl.getText() == cssConstants.no);
+        this.changeTriggeredActionCell(creature.Row, buttonComp, buttonComp.extraSettingsEl.getText() == cssConstants.no);
       });
-      let actedButtonCell = tempRow.createEl('td', {cls: cssConstants.green + " trackerTableCellWithMaxWidthStyle max50Width"});
-      let actedButtonComp = new ExtraButtonComponent(actedButtonCell);
-      actedButtonComp.extraSettingsEl.setText(cssConstants.no);
-      actedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
-      actedButtonComp.onClick( () => {
-        this.changeActedCell(tempRow, actedButtonComp, actedButtonComp.extraSettingsEl.getText() == cssConstants.no);
+      let actedButtonCell = creature.Row.createEl('td', {cls: cssConstants.green + " trackerTableCellWithMaxWidthStyle max50Width"});
+      creature.ActButton = new ExtraButtonComponent(actedButtonCell);
+      creature.ActButton.extraSettingsEl.setText(cssConstants.no);
+      creature.ActButton.extraSettingsEl.addClass("trackerCellButtonStyle");
+      creature.ActButton.onClick( () => {
+        this.changeActedCell(creature.Row, creature.ActButton, creature.ActButton.extraSettingsEl.getText() == cssConstants.no);
       });
       if (creature.Type == "Solo") {
-        let secondActedButtonComp = new ExtraButtonComponent(actedButtonCell);
-        secondActedButtonComp.extraSettingsEl.setText(cssConstants.no);
-        secondActedButtonComp.extraSettingsEl.addClass("trackerTableCellWithMaxWidthStyle");
-        secondActedButtonComp.extraSettingsEl.addClass("trackerCellButtonHalfHeight");
-        actedButtonComp.extraSettingsEl.addClass("trackerCellButtonHalfHeight");
-        secondActedButtonComp.onClick( () => {
-          this.actedButtonTwoClick(tempRow, secondActedButtonComp, secondActedButtonComp.extraSettingsEl.getText() == cssConstants.no);
+        creature.SoloActButton = new ExtraButtonComponent(actedButtonCell);
+        creature.SoloActButton.extraSettingsEl.setText(cssConstants.no);
+        creature.SoloActButton.extraSettingsEl.addClass("trackerTableCellWithMaxWidthStyle");
+        creature.SoloActButton.extraSettingsEl.addClass("trackerCellButtonHalfHeight");
+        creature.ActButton.extraSettingsEl.addClass("trackerCellButtonHalfHeight");
+        creature.SoloActButton.onClick( () => {
+          this.actedButtonTwoClick(creature.Row, creature.SoloActButton, creature.SoloActButton.extraSettingsEl.getText() == cssConstants.no);
         });
-        actedButtonComp.onClick( () => {
-        this.actedButtonOneClick(tempRow, actedButtonComp, actedButtonComp.extraSettingsEl.getText() == cssConstants.no);
+        creature.ActButton.onClick( () => {
+        this.actedButtonOneClick(creature.Row, creature.ActButton, creature.ActButton.extraSettingsEl.getText() == cssConstants.no);
       });
       } else
       {
-        actedButtonComp.extraSettingsEl.addClass("trackerCellButtonStyle");
-        actedButtonComp.extraSettingsEl.addClass("trackerCellButtonFullHeight");
+        creature.ActButton.extraSettingsEl.addClass("trackerCellButtonStyle");
+        creature.ActButton.extraSettingsEl.addClass("trackerCellButtonFullHeight");
       }
-      buttonCell = tempRow.createEl('td', {cls: 'trackerTableRemoveCellStyle max50Width'});
+      buttonCell = creature.Row.createEl('td', {cls: 'trackerTableRemoveCellStyle max50Width'});
       let removeButton = new ExtraButtonComponent(buttonCell);
       removeButton.extraSettingsEl.addClass("trackerCellRemoveButtonStyle");
       removeButton.extraSettingsEl.addClass("interactiveColor");
